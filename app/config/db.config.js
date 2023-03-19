@@ -1,10 +1,11 @@
+const { DB_NAME, DB_HOST, DB_USER, DB_PASS, DB_PORT, DB_DIALECT } = process.env
 module.exports = {
-    HOST: "127.0.0.1",
-    USER: "root",
-    PASSWORD: "root",
-    PORT: "6604",
-    DB: "alerta_uni_v1",
-    dialect: "mysql",
+    HOST: DB_HOST,
+    USER: DB_USER,
+    PASSWORD: DB_PASS,
+    PORT: DB_PORT,
+    DB: DB_NAME,
+    dialect: DB_DIALECT,
     pool: {
       max: 5,
       min: 0,
