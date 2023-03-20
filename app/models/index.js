@@ -21,5 +21,7 @@ db.Sequelize = Sequelize;
 db.sequelize = sequelize;
 
 db.adminstrador = require("./adminstrador.model")(sequelize, Sequelize);
+db.categoria_ocorrencia = require("./categoria_ocorrencia.model")(sequelize, Sequelize);
+db.natureza_ocorrencia = require("./natureza_ocorrencia.model")(sequelize, Sequelize);
 
 module.exports = db;

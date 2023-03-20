@@ -36,6 +36,8 @@ app.get("/", (req, res) => {
 
 // importando as rotas
 require("./app/routes/administrador.routes")(app);
+require("./app/routes/natureza_ocorrencia.routes")(app);
+require("./app/routes/categoria_ocorrencia.routes")(app);
 
 const PORT = process.env.PORT || 8080;
 
