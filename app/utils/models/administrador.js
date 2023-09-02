@@ -1,9 +1,4 @@
-const defaultRule = {
-    lengthMax: 999999,
-    required: true,
-    length: 3,
-    type: 'text',
-}
-module.exports [
-    { name: 'nome', rule: defaultRule },{ name: 'email', rule: {...defaultRule, type: 'email'} }, { name:'cpf', rule: defaultRule }
+const array = [
+    { name: 'nome', rule: { type: 'name' } },{ name: 'email', rule: { type: 'email'} }, { name:'cpf', rule: { type: 'cpf' } }
 ]
+module.exports  = array;

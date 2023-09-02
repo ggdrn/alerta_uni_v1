@@ -1,12 +1,10 @@
 const db = require("../models");
-console.log('aqui')
 const CategoriaOcorrencia = db.categoria_ocorrencia;
 const Op = db.Sequelize.Op;
 
 // Create and Save a new categoria_ocorrencia
 exports.create = (req, res) => {
 	// Validate request
-	console.log(req.body)
 	if (!req.body.nome) {
 		res.status(400).send({
 		  message: "O Nome da cat"

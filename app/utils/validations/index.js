@@ -8,7 +8,11 @@ const defaultRule = {
 const validateEntrace = (name, value, rule = defaultRule) => {
     switch (rule.type) {
         case 'email':
-            return emailValidate(rule, value, name);
+            return emailValidate(rule, value, name);            
+        case 'cpf':
+            return validarCPF(rule, value, name);        
+        case 'name':
+            return validateName(rule, value, name);
         case 'text':
             return textValidate(rule, value, name);
         default:
@@ -40,7 +44,7 @@ const emailValidate = (rule, value, name) => {
 
     return false;
 };
-const textValidate = (rule, name, value) => {
+const textValidate = (rule, value, name) => {
     if (value == undefined) {
         return {erro_code: 400, message: `O campo ${name} é obrigatório.`};
     }
@@ -61,4 +65,62 @@ const textValidate = (rule, name, value) => {
     }
     return false;
 };
+const validateName = (rule, value, name) => {
+    // Verificar se o nome é uma string
+    if (typeof value !== 'string') {
+      return { erro_code: 400, message: 'forneça um nome válido' };
+    }
+  
+    // Verificar se o nome contém apenas letras e espaços
+    if (!/^[a-zA-Z\s]+$/.test(value)) {
+        return { erro_code: 400, message: 'forneça um nome válido' };
+    }
+  
+    // Verificar se o nome não está em branco
+    if (value.trim() === '') {
+        return { erro_code: 400, message: 'forneça um nome válido' };
+    }
+  
+    // Se todas as verificações passarem, considerar o nome válido
+    return false;
+  }
+const validarCPF = (rule, value, name) => {
+    // Remover caracteres não numéricos
+    value = value.replace(/\D/g, '');
+  
+    // Verificar se o value possui 11 dígitos
+    if (value.length !== 11) {
+        return { erro_code: 400, message: 'verifique seu CPF, ele é inválido' };
+    }
+  
+    // Verificar values com dígitos repetidos (ex: 000.000.000-00)
+    if (/^(\d)\1+$/.test(value)) {
+        return { erro_code: 400, message: 'verifique seu CPF, ele é inválido' };
+    }
+  
+    // Calcular o primeiro dígito verificador
+    let soma = 0;
+    for (let i = 0; i < 9; i++) {
+      soma += parseInt(value.charAt(i)) * (10 - i);
+    }
+    let resto = 11 - (soma % 11);
+    let digitoVerificador1 = resto === 10 || resto === 11 ? 0 : resto;
+  
+    // Calcular o segundo dígito verificador
+    soma = 0;
+    for (let i = 0; i < 10; i++) {
+      soma += parseInt(value.charAt(i)) * (11 - i);
+    }
+    resto = 11 - (soma % 11);
+    let digitoVerificador2 = resto === 10 || resto === 11 ? 0 : resto;
+  
+    // Verificar se os dígitos verificadores são válidos
+    if (parseInt(value.charAt(9)) === digitoVerificador1 && parseInt(value.charAt(10)) === digitoVerificador2) {
+        return false;
+    } else {
+        return { erro_code: 400, message: 'verifique seu CPF, ele é inválido' };
+    }
+  }
+  
+  
 module.exports = validateEntrace; 
