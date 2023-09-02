@@ -1,11 +1,12 @@
 const db = require("../models");
 const Adminstrador = db.adminstrador;
 const Op = db.Sequelize.Op;
+const administradorValidation = require("../utils/models/administrador");
 
 // Create and Save a new Adminstrador
 exports.create = (req, res) => {
 	// Validate request
-	console.log(req.body)
+	console.log(this.validateEntrace)
 	if (!req.body.nome) {
 		res.status(400).send({
 		  message: "Content can not be empty!"

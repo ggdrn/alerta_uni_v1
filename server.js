@@ -41,5 +41,8 @@ require("./app/routes/categoria_ocorrencia.routes")(app);
 require("./app/routes/registro_ocorrencia.routes")(app);
 
 const PORT = process.env.PORT || 8080;
+// importando validação global
+const validateEntrace = require("./app/utils/validations/index");
+module.exports.validateEntrace = validateEntrace; 
 
 ViteExpress.listen(app, PORT, () => console.log("Server is listening..."));

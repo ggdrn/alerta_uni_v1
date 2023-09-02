@@ -9,7 +9,7 @@ exports.create = (req, res) => {
 	console.log(req.body)
 	if (!req.body.nome) {
 		res.status(400).send({
-		  message: "Content can not be empty!"
+		  message: "O Nome da cat"
 		});
 		return;
 	  }
