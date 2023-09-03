@@ -18,6 +18,13 @@ module.exports = (sequelize, Sequelize) => {
         genero: {
             type: Sequelize.STRING,
         },
+        universidade_uid: {
+            type: Sequelize.STRING,
+            references: {
+                model: 'vinculo_universidade',
+                key: 'uid'
+            }
+        }
     },
         {
             tableName: 'pessoa',
