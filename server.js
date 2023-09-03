@@ -29,6 +29,11 @@ db.sequelize.sync()
 
 app.use(express.urlencoded({ extended: true }));
 
+app.use((err, req, res, next) => {
+  console.error(err.stack);
+  res.status(500).send('Algo deu errado!');
+});
+
 // simple route
 app.get("/", (req, res) => {
   res.json({ message: `Welcome to ${process.env.APP_NAME} application. Version: ${process.env.APP_VERSION}` });

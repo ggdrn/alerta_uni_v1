@@ -10,7 +10,7 @@ module.exports = (sequelize, Sequelize) => {
       }, 
     email: {
         type: Sequelize.STRING,
-        unique: true, 
+        unique: true, // Define o campo como único
     },      
     cpf: {
         type: Sequelize.STRING,

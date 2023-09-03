@@ -33,19 +33,22 @@ exports.create = (req, res) => {
 		};
 
 		// Save Adminstrador in the database
-		Adminstrador.create(adminstrador)
-			.then(data => {res.send(data);
-			res.send(data);
+		return Adminstrador.create(adminstrador)
+			.then(data => {
+				res.send(data);
 			})
 			.catch(err => {
-			res.status(500).send({
-				message:
-				err.message || "Some error occurred while creating the Adminstrador."
+				res.status(500).send({
+					message:
+					err.message || "Some error occurred while creating the Adminstrador."
+				});
 			});
-		});
 	} catch (error) {
 		// Trate erros aqui
-		next(error); // Passe o erro para o middleware de tratamento de erros
+		res.status(500).send({
+			message: "Não foi possível processar a requisição",
+			error
+		}); // Passe o erro para o middleware de tratamento de erros
 	  }
 };
 
