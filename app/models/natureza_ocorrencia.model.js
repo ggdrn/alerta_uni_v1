@@ -1,20 +1,20 @@
 module.exports = (sequelize, Sequelize) => {
     const NaturezaOcorrencia = sequelize.define("natureza_ocorrencia", {
-    id: {
-        type: Sequelize.INTEGER,
-        primaryKey: true,
-        autoIncrement: true,
-    },
-    nome: {
-        type: Sequelize.STRING
-      }, 
-    categoria_id: {
-        type: Sequelize.STRING,
-        references: {
-            model: 'categoria_ocorrencia',
-            key: 'id'
-          }
-    },
+		uid: {
+			type: Sequelize.UUID,
+			defaultValue: Sequelize.UUIDV4, // Valor padrão para gerar um UUID v4
+			primaryKey: true, // Define esta coluna como chave primária
+		},
+		nome: {
+			type: Sequelize.STRING
+		}, 
+		categoria_id: {
+			type: Sequelize.STRING,
+			references: {
+				model: 'categoria_ocorrencia',
+				key: 'id'
+			}
+		},
     }, 
     {
         tableName:'natureza_ocorrencia',
