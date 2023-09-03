@@ -8,11 +8,11 @@ module.exports = (sequelize, Sequelize) => {
 		nome: {
 			type: Sequelize.STRING
 		}, 
-		categoria_id: {
+		categoria_uid: {
 			type: Sequelize.STRING,
 			references: {
 				model: 'categoria_ocorrencia',
-				key: 'id'
+				key: 'uid'
 			}
 		},
     }, 

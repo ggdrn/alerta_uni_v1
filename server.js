@@ -41,6 +41,7 @@ app.get("/", (req, res) => {
 
 // importando as rotas
 require("./app/routes/administrador.routes")(app);
+require("./app/routes/pessoa.routes")(app);
 require("./app/routes/natureza_ocorrencia.routes")(app);
 require("./app/routes/categoria_ocorrencia.routes")(app);
 require("./app/routes/registro_ocorrencia.routes")(app);

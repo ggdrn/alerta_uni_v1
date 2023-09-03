@@ -14,7 +14,7 @@ module.exports = (sequelize, Sequelize) => {
             unique: true,
         },    
         descricao: {
-            type: Sequelize.STRING,
+            type: Sequelize.STRING(255),
         },
         classificacao: {
             type: Sequelize.STRING
@@ -31,14 +31,14 @@ module.exports = (sequelize, Sequelize) => {
         longitude: {
             type: Sequelize.INTEGER,
         }, 
-        natureza_id: {
+        natureza_uid: {
             type: Sequelize.STRING,
             references: {
                 model: 'natureza_ocorrencia',
                 key: 'uid'
             }
         },    
-        pessoa_id: {
+        pessoa_uid: {
             type: Sequelize.STRING,
             references: {
                 model: 'pessoa',
