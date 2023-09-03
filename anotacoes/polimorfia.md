@@ -1,4 +1,6 @@
-Para implementar heranças com características específicas para as tabelas "Autor" e "Vítima" em Sequelize, você pode usar o conceito de associações e tabelas relacionadas. Vou mostrar como criar os modelos e associações para atender aos seus requisitos:
+Se você deseja implementar heranças com polimorfia no Sequelize para as tabelas "Autor" e "Vítima", você pode usar a técnica de tabelas polimórficas junto com a associação `BelongsTo` para associar a tabela "Pessoa" a ambas as tabelas "Autor" e "Vítima". 
+
+Aqui está como você pode fazer isso:
 
 1. **Defina o Modelo "Pessoa"**:
 
@@ -35,9 +37,9 @@ Para implementar heranças com características específicas para as tabelas "Au
    // Defina outras configurações, como índices, associações, etc.
    ```
 
-2. **Defina o Modelo "Autor"**:
+2. **Defina os Modelos "Autor" e "Vítima"**:
 
-   Em seguida, defina o modelo "Autor" com os campos específicos do autor, como "instrumento_portado". Este modelo terá uma associação com o modelo "Pessoa":
+   Em seguida, defina os modelos "Autor" e "Vítima" com os campos específicos de cada herança, como "instrumento_portado" para "Autor" e "email", "data_nascimento" e "telefone" para "Vítima". Esses modelos terão uma associação `BelongsTo` com o modelo "Pessoa":
 
    ```javascript
    const Autor = sequelize.define('Autor', {
@@ -46,15 +48,6 @@ Para implementar heranças com características específicas para as tabelas "Au
      },
    });
 
-   // Associe o modelo Autor com o modelo Pessoa
-   Autor.belongsTo(Pessoa);
-   ```
-
-3. **Defina o Modelo "Vitima"**:
-
-   Da mesma forma, defina o modelo "Vitima" com os campos específicos da vítima, como "email", "data_nascimento" e "telefone", e associe-o com o modelo "Pessoa":
-
-   ```javascript
    const Vitima = sequelize.define('Vitima', {
      email: {
        type: DataTypes.STRING,
@@ -67,13 +60,16 @@ Para implementar heranças com características específicas para as tabelas "Au
      },
    });
 
-   // Associe o modelo Vitima com o modelo Pessoa
-   Vitima.belongsTo(Pessoa);
+   // Associe os modelos Autor e Vitima com o modelo Pessoa usando polimorfismo
+   Pessoa.hasOne(Autor, { foreignKey: 'pessoaId', constraints: false });
+   Pessoa.hasOne(Vitima, { foreignKey: 'pessoaId', constraints: false });
    ```
 
-4. **Usando a Herança**:
+   Neste exemplo, estamos usando `Pessoa.hasOne` para criar uma associação entre "Pessoa" e "Autor" e outra entre "Pessoa" e "Vítima". O parâmetro `constraints: false` é importante aqui, pois estamos usando polimorfismo e não queremos adicionar restrições de chave estrangeira à tabela "Pessoa".
 
-   Agora você pode criar registros nas tabelas "Autor" e "Vitima" que estão associadas à tabela "Pessoa":
+3. **Usando a Herança**:
+
+   Agora você pode criar registros nas tabelas "Autor" e "Vítima" associadas à tabela "Pessoa":
 
    ```javascript
    sequelize.sync()
@@ -89,7 +85,7 @@ Para implementar heranças com características específicas para as tabelas "Au
        return Autor.create({
          instrumento_portado: 'Guitarra',
        }).then((autor) => {
-         autor.setPessoa(pessoa); // Associe o autor à pessoa
+         pessoa.setAutor(autor); // Associe o autor à pessoa
        });
      })
      .then(() => {
@@ -98,7 +94,7 @@ Para implementar heranças com características específicas para as tabelas "Au
          data_nascimento: '1990-01-01',
          telefone: '123-456-7890',
        }).then((vitima) => {
-         vitima.setPessoa(pessoa); // Associe a vítima à mesma pessoa
+         pessoa.setVitima(vitima); // Associe a vítima à mesma pessoa
        });
      })
      .catch((error) => {
@@ -106,6 +102,6 @@ Para implementar heranças com características específicas para as tabelas "Au
      });
    ```
 
-   Neste exemplo, uma instância de "Pessoa" é criada primeiro e, em seguida, instâncias de "Autor" e "Vitima" são criadas e associadas à mesma instância de "Pessoa". Dessa forma, você tem uma relação de herança entre "Pessoa", "Autor" e "Vitima".
+   Neste exemplo, uma instância de "Pessoa" é criada primeiro e, em seguida, instâncias de "Autor" e "Vítima" são criadas e associadas à mesma instância de "Pessoa". Dessa forma, você tem uma relação de herança com polimorfismo entre "Pessoa", "Autor" e "Vítima".
 
-Este é um exemplo simples de implementação de herança no Sequelize. Dependendo dos seus requisitos específicos, você pode estender essa estrutura e adicionar mais complexidade, como associações polimórficas, se necessário. Certifique-se de ajustar os campos e configurações de acordo com o seu caso de uso real.
+Esta é uma implementação de herança com polimorfismo no Sequelize. Você pode ajustar os campos e configurações de acordo com suas necessidades específicas. Certifique-se de usar os métodos de associação corretos para associar as entidades relacionadas.
