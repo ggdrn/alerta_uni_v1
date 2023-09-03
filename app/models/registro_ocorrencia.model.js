@@ -32,21 +32,21 @@ module.exports = (sequelize, Sequelize) => {
             type: Sequelize.INTEGER,
         },
         natureza_uid: {
-            type: Sequelize.STRING,
+            type: Sequelize.UUID,
             references: {
                 model: 'natureza_ocorrencia',
                 key: 'uid'
             }
         },
         pessoa_uid: {
-            type: Sequelize.STRING,
+            type: Sequelize.UUID,
             references: {
                 model: 'pessoa',
                 key: 'uid'
             }
         },
         item_uid: {
-            type: Sequelize.STRING,
+            type: Sequelize.UUID,
             references: {
                 model: 'item_subtraido',
                 key: 'uid'

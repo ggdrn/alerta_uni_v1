@@ -15,7 +15,7 @@ module.exports = (sequelize, Sequelize) => {
             type: Sequelize.STRING,
         },
         tipo_uid: {
-            type: Sequelize.STRING,
+            type: Sequelize.UUID,
             references: {
                 model: 'tipo_vinculo',
                 key: 'uid'

@@ -21,10 +21,10 @@ app.use(express.json());
 const db = require("./app/models");
 db.sequelize.sync()
   .then(() => {
-    console.log("Synced db.");
+    console.log('Tabelas criadas no banco de dados.');
   })
   .catch((err) => {
-    console.log("Failed to sync db: " + err.message);
+    console.error('Erro ao criar tabelas:', err.message);
   });
 
 app.use(express.urlencoded({ extended: true }));

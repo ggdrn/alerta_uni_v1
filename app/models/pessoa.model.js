@@ -19,7 +19,7 @@ module.exports = (sequelize, Sequelize) => {
             type: Sequelize.STRING,
         },
         universidade_uid: {
-            type: Sequelize.STRING,
+            type: Sequelize.UUID,
             references: {
                 model: 'vinculo_universidade',
                 key: 'uid'
@@ -32,7 +32,7 @@ module.exports = (sequelize, Sequelize) => {
 
     const Autor = sequelize.define('Autor', {
         instrumento_portado: {
-            type: DataTypes.STRING,
+            type: Sequelize.STRING,
         },
     }, {
         tableName: 'autor',
@@ -40,13 +40,13 @@ module.exports = (sequelize, Sequelize) => {
 
     const Vitima = sequelize.define('Vitima', {
         email: {
-            type: DataTypes.STRING,
+            type: Sequelize.STRING,
         },
         data_nascimento: {
-            type: DataTypes.DATE,
+            type: Sequelize.DATE,
         },
         telefone: {
-            type: DataTypes.STRING,
+            type: Sequelize.STRING,
         },
     }, {
         tableName: 'vitima',
