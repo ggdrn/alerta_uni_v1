@@ -17,6 +17,10 @@ const validateEntrace = (name, value, rule = defaultRule) => {
             return textValidate(rule, value, name);
         case 'rg':
             return validarRG(rule, value, name);
+        case 'password':
+            return validarSenha(rule, value, name);
+        case 'number':
+            return validarNumero(rule, value, name);
         default:
             return textValidate(rule, value, name);
     }
@@ -138,5 +142,23 @@ const validarRG = (rule, rg, name) => {
     return false;
 }
 
+const validarSenha = (rule, senha, name) => {
+    /* Você pode validar uma senha com pelo menos 8 dígitos, incluindo pelo menos 1 letra maiúscula, 1 
+    letra minúscula e 1 caractere especial usando expressões regulares */
+    // A expressão regular verifica se a senha atende aos critérios especificados.
+    const regex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#$%^&*])(?=.{8,})/;
 
+    if (regex.test(senha)) {
+        return false; // A senha é válida
+    } else {
+        return { erro_code: 400, message: 'verifique sua Senha, ela não atende aos requisitos mínimos' };; // A senha não é válida
+    }
+}
+const validarNumero = (rule, value, name) => {
+    if (!isNaN(value)) {
+        return false; // o valor é um numero
+    } else {
+        return { erro_code: 400, message: `O campo ${name} deve ser do tipo numérico` };; // A senha não é válida
+    }
+}
 module.exports = validateEntrace; 

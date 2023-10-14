@@ -46,6 +46,7 @@ require("./app/routes/item_subtraido.routes")(app);
 require("./app/routes/natureza_ocorrencia.routes")(app);
 require("./app/routes/categoria_ocorrencia.routes")(app);
 require("./app/routes/registro_ocorrencia.routes")(app);
+require("./app/routes/usuario.routes")(app);
 
 const PORT = process.env.PORT || 8080;
 

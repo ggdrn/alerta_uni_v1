@@ -28,4 +28,5 @@ db.tipo_vinculo = require("./tipo_vinculo.model")(sequelize, Sequelize);
 db.vinculo_universidade = require("./vinculo_universidade.model")(sequelize, Sequelize);
 db.registro_ocorrencia = require("./registro_ocorrencia.model")(sequelize, Sequelize);
 db.pessoa = require("./pessoa.model")(sequelize, Sequelize);
+db.usuario = require("./usuario.model")(sequelize, Sequelize);
 module.exports = db;
