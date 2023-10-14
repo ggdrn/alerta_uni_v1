@@ -39,8 +39,7 @@ exports.create = (req, res) => {
 			})
 			.catch(err => {
 				res.status(500).send({
-					message:
-					err.message || "Some error occurred while creating the Adminstrador."
+					...err || "Some error occurred while creating the Adminstrador."
 				});
 			});
 	} catch (error) {

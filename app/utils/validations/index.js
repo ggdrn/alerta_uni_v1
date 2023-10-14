@@ -39,7 +39,7 @@ const emailValidate = (rule, value, name) => {
         (domain.search('.') != -1) &&
         (domain.indexOf('.') >= 1) &&
         (domain.lastIndexOf('.') < domain.length - 1))) {
-        return `Insira um ${name} válido.`;
+        return {erro_code: 400, message: `Insira um ${name} válido.`};
     }
 
     return false;

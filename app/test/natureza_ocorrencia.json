@@ -1,0 +1,235 @@
+{
+    "data" : [ 
+    {
+        "nome": "Agressão física", "categoria_uid": "1053779e-d0ff-4c5c-8855-6baebee3d169"
+    },    
+    {
+        "nome": "Agressão verbal", "categoria_uid": "1053779e-d0ff-4c5c-8855-6baebee3d169"
+    },    
+    {
+        "nome": "Ameaça", "categoria_uid": "1053779e-d0ff-4c5c-8855-6baebee3d169"
+    },    
+    {
+        "nome": "Discriminação", "categoria_uid": "1053779e-d0ff-4c5c-8855-6baebee3d169"
+    },    
+    {
+        "nome": "Bullying / humilhação sistemática", "categoria_uid": "1053779e-d0ff-4c5c-8855-6baebee3d169"
+    },    
+    {
+        "nome": "Ação violenta de Grupos / Gangues", "categoria_uid": "1053779e-d0ff-4c5c-8855-6baebee3d169"
+    },    
+    {
+        "nome": "Assédio e/ou abuso sexual", "categoria_uid": "7271c64a-a88c-4e61-bd90-4f64302f87a9"
+    },    
+    {
+        "nome": "Violência sexual e/ou estupro", "categoria_uid": "7271c64a-a88c-4e61-bd90-4f64302f87a9"
+    },
+    {
+        "nome": "Uso de álcool, tabaco e outras drogas lícitas", "categoria_uid": "c5e78c5f-b84b-4846-9b5c-c0e0ceb564d0"
+    },
+    {
+        "nome": "Uso de drogas ilícitas", "categoria_uid": "c5e78c5f-b84b-4846-9b5c-c0e0ceb564d0"
+    },
+    {
+        "nome": "Venda de álcool ou tabaco para menores", "categoria_uid": "c5e78c5f-b84b-4846-9b5c-c0e0ceb564d0"
+    },
+    {
+        "nome": "Tráfico / Venda de drogas ilícitas", "categoria_uid": "c5e78c5f-b84b-4846-9b5c-c0e0ceb564d0"
+    },
+    {
+        "nome": "Encontro de álcool e/ou outras drogas", "categoria_uid": "c5e78c5f-b84b-4846-9b5c-c0e0ceb564d0"
+    },
+    {
+        "nome": "Vandalismo / Depredação", "categoria_uid": "1237aa6c-3933-4259-bcd5-4abf7cee5290"
+    },
+    {
+        "nome": "Invasão", "categoria_uid": "1237aa6c-3933-4259-bcd5-4abf7cee5290"
+    },
+    {
+        "nome": "Roubo", "categoria_uid": "1237aa6c-3933-4259-bcd5-4abf7cee5290"
+    },
+    {
+        "nome": "Furto", "categoria_uid": "1237aa6c-3933-4259-bcd5-4abf7cee5290"
+    },
+    {
+        "nome": "Ausência não autorizada pelos pais e/ou responsáveis", "categoria_uid": "418923b0-a2be-42d2-9bdc-1a1040d986b1"
+    },
+    {
+        "nome": "Evasão", "categoria_uid": "418923b0-a2be-42d2-9bdc-1a1040d986b1"
+    },
+    {
+        "nome": "Aluno vítima de maus tratos e/ou abandono", "categoria_uid": "418923b0-a2be-42d2-9bdc-1a1040d986b1"
+    },
+    {
+        "nome": "Desaparecimento de aluno comunicado por familiares / responsáveis", "categoria_uid": "418923b0-a2be-42d2-9bdc-1a1040d986b1"
+    },
+    {
+        "nome": "Violência autoinfligida", "categoria_uid": "418923b0-a2be-42d2-9bdc-1a1040d986b1"
+    },
+    {
+        "nome": "Acidentes ou casos fortuitos", "categoria_uid": "418923b0-a2be-42d2-9bdc-1a1040d986b1"
+    },
+    {
+        "nome": "Óbito", "categoria_uid": "418923b0-a2be-42d2-9bdc-1a1040d986b1"
+    },
+    {
+        "nome": "Posse ou encontro de armas e/ou outros objetos perigosos", "categoria_uid": "ca9a682f-c251-4293-ab61-b0de9ae5b42e"
+    },
+    {
+        "nome": "Episódio de indisciplina recorrente", "categoria_uid": "b56609d7-d454-4708-a48c-56cb347c54a5"
+    },
+    {
+        "nome": "Utilização indevida de aparelhos eletrônicos", "categoria_uid": "b56609d7-d454-4708-a48c-56cb347c54a5"
+    },
+    {
+        "nome": "Saída injustificada de atividade pedagógica / sala de aula", "categoria_uid": "b56609d7-d454-4708-a48c-56cb347c54a5"
+    },
+    {
+        "nome": "Abuso de autoridade", "categoria_uid": "1053779e-d0ff-4c5c-8855-6baebee3d169"
+    },
+    {
+        "nome": "Agressão verbal", "categoria_uid": "1053779e-d0ff-4c5c-8855-6baebee3d169"
+    },
+    {
+        "nome": "Ameaça", "categoria_uid": "1053779e-d0ff-4c5c-8855-6baebee3d169"
+    },
+    {
+        "nome": "Calúnia", "categoria_uid": "1053779e-d0ff-4c5c-8855-6baebee3d169"
+    },
+    {
+        "nome": "Constrangimento ilegal", "categoria_uid": "1053779e-d0ff-4c5c-8855-6baebee3d169"
+    },
+    {
+        "nome": "Discriminação ou preconceito de raça, cor, etnia, religião, procedência nacional, orientação sexual ou identidade de gênero", "categoria_uid": "1053779e-d0ff-4c5c-8855-6baebee3d169"
+    },
+    {
+        "nome": "Denunciação Caluniosa", "categoria_uid": "1053779e-d0ff-4c5c-8855-6baebee3d169"
+    },
+    {
+        "nome": "Desacato", "categoria_uid": "1053779e-d0ff-4c5c-8855-6baebee3d169"
+    },
+    {
+        "nome": "Difamação", "categoria_uid": "1053779e-d0ff-4c5c-8855-6baebee3d169"
+    },
+    {
+        "nome": "Injúria", "categoria_uid": "1053779e-d0ff-4c5c-8855-6baebee3d169"
+    },
+    {
+        "nome": "Lesão corporal", "categoria_uid": "1053779e-d0ff-4c5c-8855-6baebee3d169"
+    },
+    {
+        "nome": "Recusa de atendimento médico", "categoria_uid": "1053779e-d0ff-4c5c-8855-6baebee3d169"
+    },
+    {
+        "nome": "Resistência", "categoria_uid": "1053779e-d0ff-4c5c-8855-6baebee3d169"
+    },
+    {
+        "nome": "Tentativa de agressão", "categoria_uid": "1053779e-d0ff-4c5c-8855-6baebee3d169"
+    },
+    {
+        "nome": "Cultivo ou plantio de vegetais e substratos para preparo de drogas", "categoria_uid": "c5e78c5f-b84b-4846-9b5c-c0e0ceb564d0"
+    },
+    {
+        "nome": "Posse ilegal de drogas para consumo pessoal", "categoria_uid": "c5e78c5f-b84b-4846-9b5c-c0e0ceb564d0"
+    },
+    {
+        "nome": "Tráfico ilícito de drogas", "categoria_uid": "c5e78c5f-b84b-4846-9b5c-c0e0ceb564d0"
+    },
+    {
+        "nome": "Uso de entorpecentes nas dependências universitárias", "categoria_uid": "c5e78c5f-b84b-4846-9b5c-c0e0ceb564d0"
+    },
+    {
+        "nome": "Cárcere privado", "categoria_uid": "0ef9c10d-e2bc-407a-b4dd-27168a391634"
+    },
+    {
+        "nome": "Atropelamento", "categoria_uid": "df09901e-b761-4deb-be1b-80f16c8766fe"
+    },
+    {
+        "nome": "Homicídio", "categoria_uid": "df09901e-b761-4deb-be1b-80f16c8766fe"
+    },
+    {
+        "nome": "Disparo de armas de fogo ou acionamento de munição", "categoria_uid": "3a33fda6-0b6b-432b-b1d5-7a793b7f68fb"
+    },
+    {
+        "nome": "Porte ilegal de armas de fogo", "categoria_uid": "3a33fda6-0b6b-432b-b1d5-7a793b7f68fb"
+    },
+    {
+        "nome": "Abandono de animais", "categoria_uid": "a767beb0-a5d8-4cab-a412-7cd785e1633c"
+    },
+    {
+        "nome": "Caça, pesca ou comercialização de animais silvestres sem autorização", "categoria_uid": "a767beb0-a5d8-4cab-a412-7cd785e1633c"
+    },
+    {
+        "nome": "Destruição ou dano da vegetação", "categoria_uid": "a767beb0-a5d8-4cab-a412-7cd785e1633c"
+    },
+    {
+        "nome": "Maus-tratos aos animais", "categoria_uid": "a767beb0-a5d8-4cab-a412-7cd785e1633c"
+    },
+    {
+        "nome": "Apropriação de coisa achada", "categoria_uid": "27047efd-7e7f-437d-b827-a71e2eb264ce"
+    },
+    {
+        "nome": "Causar incêndio expondo patrimônio", "categoria_uid": "27047efd-7e7f-437d-b827-a71e2eb264ce"
+    },
+    {
+        "nome": "Dano ao patrimônio", "categoria_uid": "27047efd-7e7f-437d-b827-a71e2eb264ce"
+    },
+    {
+        "nome": "Extorsão", "categoria_uid": "27047efd-7e7f-437d-b827-a71e2eb264ce"
+    },
+    {
+        "nome": "Furto", "categoria_uid": "27047efd-7e7f-437d-b827-a71e2eb264ce"
+    },
+    {
+        "nome": "Invasão de propriedade pública ou privada", "categoria_uid": "27047efd-7e7f-437d-b827-a71e2eb264ce"
+    },
+    {
+        "nome": "Peculato", "categoria_uid": "27047efd-7e7f-437d-b827-a71e2eb264ce"
+    },
+    {
+        "nome": "Receptação", "categoria_uid": "27047efd-7e7f-437d-b827-a71e2eb264ce"
+    },
+    {
+        "nome": "Roubo", "categoria_uid": "27047efd-7e7f-437d-b827-a71e2eb264ce"
+    },
+    {
+        "nome": "Tentativa de dano ao patrimônio", "categoria_uid": "27047efd-7e7f-437d-b827-a71e2eb264ce"
+    },
+    {
+        "nome": "Tentativa de furto", "categoria_uid": "27047efd-7e7f-437d-b827-a71e2eb264ce"
+    },
+    {
+        "nome": "Tentativa de roubo", "categoria_uid": "27047efd-7e7f-437d-b827-a71e2eb264ce"
+    },
+    {
+        "nome": "Violação à domicílio", "categoria_uid": "27047efd-7e7f-437d-b827-a71e2eb264ce"
+    },
+    {
+        "nome": "Porte de arma branca em via pública", "categoria_uid": "229cdfdb-a2af-4c55-8e9d-6ca0047a75f0"
+    },
+    {
+        "nome": "Assédio sexual", "categoria_uid": "14d05cc9-34b4-450b-ad66-0d1f7cef47f6"
+    },
+    {
+        "nome": "Estupro", "categoria_uid": "14d05cc9-34b4-450b-ad66-0d1f7cef47f6"
+    },
+    {
+        "nome": "Estupro de vulnerável", "categoria_uid": "14d05cc9-34b4-450b-ad66-0d1f7cef47f6"
+    },
+    {
+        "nome": "Importunação sexual", "categoria_uid": "14d05cc9-34b4-450b-ad66-0d1f7cef47f6"
+    },
+    {
+        "nome": "Tentativa de estupro", "categoria_uid": "14d05cc9-34b4-450b-ad66-0d1f7cef47f6"
+    },
+    {
+        "nome": "Infrações contra o Estatuto da Criança e do Adolescente", "categoria_uid": "d61cc505-dc41-4978-a426-0a793908b355"
+    },
+    {
+        "nome": "Constituição de milícia privada", "categoria_uid": "d61cc505-dc41-4978-a426-0a793908b355"
+    },
+    {
+        "nome": "Encontro de cadáver", "categoria_uid": "d61cc505-dc41-4978-a426-0a793908b355"
+    }
+] 
+}
