@@ -47,6 +47,8 @@ require("./app/routes/natureza_ocorrencia.routes")(app);
 require("./app/routes/categoria_ocorrencia.routes")(app);
 require("./app/routes/registro_ocorrencia.routes")(app);
 require("./app/routes/usuario.routes")(app);
+require("./app/routes/tipo_vinculo.routes")(app);
+require("./app/routes/vinculo_universidade.routes")(app);
 
 const PORT = process.env.PORT || 8080;
 

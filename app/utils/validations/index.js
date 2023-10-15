@@ -21,6 +21,8 @@ const validateEntrace = (name, value, rule = defaultRule) => {
             return validarSenha(rule, value, name);
         case 'number':
             return validarNumero(rule, value, name);
+        case 'date':
+            return validarData(rule, value, name);
         default:
             return textValidate(rule, value, name);
     }
@@ -158,7 +160,25 @@ const validarNumero = (rule, value, name) => {
     if (!isNaN(value)) {
         return false; // o valor é um numero
     } else {
-        return { erro_code: 400, message: `O campo ${name} deve ser do tipo numérico` };; // A senha não é válida
+        return { erro_code: 400, message: `O campo ${name} deve ser do tipo numérico` };
+    }
+}
+function validarData(rule, value, name) {
+    // Use uma expressão regular para verificar o formato da data
+    const regexData = /^\d{4}-\d{2}-\d{2}$/;
+
+    if (!regexData.test(value)) {
+        return { erro_code: 400, message: `O campo ${name} deve ser uma data válida` }; // O formato da data está incorreto
+    }
+
+    // Tente criar uma instância de Date com o valor
+    const data = new Date(value);
+
+    // Verifique se a instância de Date é válida e se o ano, mês e dia estão dentro de faixas válidas
+    if (!isNaN(data.getTime()) && data.getFullYear() >= 1000 && data.getFullYear() <= 9999) {
+        return false;
+    } else {
+        return { erro_code: 400, message: `O campo ${name} deve ser uma data válida` };
     }
 }
 module.exports = validateEntrace; 

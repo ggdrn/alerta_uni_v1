@@ -1,12 +1,11 @@
 {
-    "status": "Aberta",
-    "protocolo": "Inicial",
     "descricao": "descricao teste",
     "classificacao": "Teste",
     "data_ocorrencia": "2023-01-01",
     "local": "Campus Rural",
     "latitude": -22.7819,
     "longitude": 43.6855,
-    "natureza_id": 1,
-    "pessoa_id": 1
+    "natureza_uid": 1,
+    "pessoa_uid": 1,
+    "item_uid": 1
 }
