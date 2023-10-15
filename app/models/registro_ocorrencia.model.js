@@ -10,7 +10,7 @@ module.exports = (sequelize, Sequelize) => {
         },
         protocolo: {
             type: Sequelize.STRING,
-            allowNull: false,
+            allowNull: true,
             unique: true,
         },
         descricao: {
@@ -26,10 +26,10 @@ module.exports = (sequelize, Sequelize) => {
             type: Sequelize.STRING,
         },
         latitude: {
-            type: Sequelize.INTEGER,
+            type: Sequelize.FLOAT,
         },
         longitude: {
-            type: Sequelize.INTEGER,
+            type: Sequelize.FLOAT,
         },
         natureza_uid: {
             type: Sequelize.UUID,
@@ -53,9 +53,29 @@ module.exports = (sequelize, Sequelize) => {
             }
         },
     },
+        // {
+        //     hooks: {
+        //         beforeCreate: async (registro, options) => {
+        //             console.log('fui executado?')
+        //             const ultimoProtocolo = await registro.max('protocolo');
+        //             const numero = parseFloat(ultimoProtocolo.match(/\d+/));
+        //             registro.protocolo = ultimoProtocolo ? "aup" + numero + 1 : "aup" + 1;
+        //         },
+        //     }
+        // },
         {
             tableName: 'registro_ocorrencia',
         });
+
+    // RegistroOcorrencia.hook('beforeCreate', function (instance, options) {
+    //     return new Promise(async (resolve, reject) => {
+    //         console.log('fui executado?')
+    //         const ultimoProtocolo = await registro.max('protocolo');
+    //         const numero = parseFloat(ultimoProtocolo.match(/\d+/));
+    //         registro.protocolo = ultimoProtocolo ? "aup" + numero + 1 : "aup" + 1;
+    //         resolve('protocolo gerado');
+    //     });
+    // });
 
     return RegistroOcorrencia;
 };

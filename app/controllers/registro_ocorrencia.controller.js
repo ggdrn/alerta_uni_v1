@@ -9,8 +9,8 @@ exports.create = async (req, res) => {
 	try {
 		// validação da request
 		let erros = [];
-		const data = req.body;
-		// Validar o array de pessoas
+		let data = req.body;
+		// Validar o array de Ocorrencias
 		registroOcorrenciaValidation.forEach(({ name, rule }) => {
 			const error = validateEntrace(name, data[name], rule)
 			if (error) {
@@ -25,8 +25,17 @@ exports.create = async (req, res) => {
 			});
 		}
 
-		// Save pessoa in the database
+		// Save registros in the database
 		let registros = {}
+
+		data.status = "Aberta";
+
+		RegistroOcorrencia.beforeCreate(async (registro, options) => {
+			const ultimoProtocolo = await RegistroOcorrencia.max('protocolo');
+			console.log(ultimoProtocolo);
+			const protocolo = ultimoProtocolo ? "aup000" + (parseFloat(ultimoProtocolo.match(/\d+/)) + 1) : "aup000" + 1;
+			registro.protocolo = protocolo;
+		});
 
 		await RegistroOcorrencia.create(data)
 			.then(data => {
@@ -35,12 +44,11 @@ exports.create = async (req, res) => {
 			.catch(err => {
 				res.status(500).send({
 					message:
-						err.message || "Não foi possível processar a requisição de Pessoa."
+						err.message || "Não foi possível processar a requisição de Registro Ocorrência."
 				});
 			});
-		return res.send({ sucess: "pessoas Registradas com sucesso", data: registros })
+		return res.send({ sucess: "Ocorrencia Registrada com sucesso", data: registros })
 	} catch (error) {
-		console.log('estou aqui?')
 		res.status(500).send({
 			message: "Não foi possível processar a requisição",
 			error

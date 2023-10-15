@@ -6,7 +6,6 @@ const Op = db.Sequelize.Op;
 
 const usuarioValidation = require("../utils/models/usuario");
 const validateEntrace = require("../utils/validations/index");
-const { async } = require("regenerator-runtime");
 // Create and Save a new usuario
 exports.create = async (req, res) => {
 	try {
