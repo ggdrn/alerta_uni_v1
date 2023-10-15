@@ -23,7 +23,11 @@ module.exports = (sequelize, Sequelize) => {
             tableName: 'usuario',
         });
     const AuthToken = sequelize.define('auth_token', {
-        userId: Sequelize.UUID,
+        uid: {
+            type: Sequelize.UUID,
+            defaultValue: Sequelize.UUIDV4, // Valor padrão para gerar um UUID v4
+            primaryKey: true, // Define esta coluna como chave primária
+        },
         token: Sequelize.STRING, // Token de autenticação
     });
     Usuario.hasMany(AuthToken);

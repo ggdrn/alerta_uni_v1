@@ -9,7 +9,7 @@ module.exports = app => {
   // Retrieve all usuario
   router.get("/", usuario.findAll);
 
-  router.get("/login", usuario.login);
+  router.post("/login", usuario.login);
 
   router.get("/logout", usuario.logout);
 

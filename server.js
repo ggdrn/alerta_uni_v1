@@ -34,8 +34,13 @@ app.use((err, req, res, next) => {
   res.status(500).send('Algo deu errado!');
 });
 
+// MiddlewareMiddleware de autenticação
+const autenticacaoMiddleware = require("./app/middleware")
+
+app.use(autenticacaoMiddleware);
+
 // simple route
-app.get("/", (req, res) => {
+app.get("/", autenticacaoMiddleware, (req, res) => {
   res.json({ message: `Welcome to ${process.env.APP_NAME} application. Version: ${process.env.APP_VERSION}` });
 });
 

@@ -3,6 +3,7 @@ const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const Usuario = db.usuario;
 const Op = db.Sequelize.Op;
+const AuthToken = db.sequelize.models.auth_token;
 
 const usuarioValidation = require("../utils/models/usuario");
 const validateEntrace = require("../utils/validations/index");
@@ -111,8 +112,40 @@ exports.findAllPublished = (req, res) => {
 };
 
 // Para o usuário realizar login
-exports.login = (req, res) => {
+exports.login = async (req, res) => {
+	try {
 
+		let usuario = req.body;
+		let condition = usuario?.email ? { email: { [Op.eq]: `${usuario.email}` } } : null;
+
+		const registro = await Usuario.findOne({ where: condition });
+		const senhaInseridaPeloUsuario = usuario.password;
+		const senhaNoBancoDeDados = registro.password;
+		bcrypt.compare(senhaInseridaPeloUsuario, senhaNoBancoDeDados, async (err, result) => {
+			if (err) {
+				// Trate erros aqui
+				res.status(401).send({
+					message: "Não foi possível relaizar o login, verifique o email e senha"
+				});
+			} else if (result) {
+				const novoToken = jwt.sign({ userId: registro.uid }, registro.password, { expiresIn: '24h' }); // Token expira em 24 horas
+				const [{ token }] = await AuthToken.findOrCreate({
+					where: { token: novoToken, usuarioUid: registro.uid },
+					defaults: { token: novoToken, usuarioUid: registro.uid },
+				});
+				return res.send({ message: "Usuário Logado com sucesso", token });
+			} else {
+				res.status(401).send({
+					message: "Não foi possível relaizar o login, verifique o email e senha"
+				});
+			}
+		});
+	} catch (error) {
+		console.log(error)
+		res.status(401).send({
+			message: "Não foi possível relaizar o login, verifique o email e senha"
+		});
+	}
 };
 
 // Para o usuário realizar logout
