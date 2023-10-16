@@ -22,11 +22,16 @@ db.sequelize = sequelize;
 
 db.adminstrador = require("./adminstrador.model")(sequelize, Sequelize);
 db.categoria_ocorrencia = require("./categoria_ocorrencia.model")(sequelize, Sequelize);
-db.natureza_ocorrencia = require("./natureza_ocorrencia.model")(sequelize, Sequelize);
-db.item_subtraido = require("./item_subtraido.model")(sequelize, Sequelize);
+const NaturezaOcorrencia = db.natureza_ocorrencia = require("./natureza_ocorrencia.model")(sequelize, Sequelize);
+const ItemSubtraido = db.item_subtraido = require("./item_subtraido.model")(sequelize, Sequelize);
 db.tipo_vinculo = require("./tipo_vinculo.model")(sequelize, Sequelize);
 db.vinculo_universidade = require("./vinculo_universidade.model")(sequelize, Sequelize);
-db.registro_ocorrencia = require("./registro_ocorrencia.model")(sequelize, Sequelize);
-db.pessoa = require("./pessoa.model")(sequelize, Sequelize);
+const RegistroOcorrencia = db.registro_ocorrencia = require("./registro_ocorrencia.model")(sequelize, Sequelize);
+const Pessoa = db.pessoa = require("./pessoa.model")(sequelize, Sequelize);
 db.usuario = require("./usuario.model")(sequelize, Sequelize);
+
+// Definindo as associações
+RegistroOcorrencia.belongsTo(ItemSubtraido, { foreignKey: 'item_uid' });
+RegistroOcorrencia.belongsTo(NaturezaOcorrencia, { foreignKey: 'natureza_uid' });
+RegistroOcorrencia.belongsTo(Pessoa, { foreignKey: 'pessoa_uid' });
 module.exports = db;

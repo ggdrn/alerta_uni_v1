@@ -12,6 +12,7 @@ function usuarioTipoPessoaAutenticacao(usuario, originalUrl) {
         'perfil',
         'usuario/criar',
         'registro_ocorrencia/criar',
+        'registro_ocorrencia/detalhes',
         'categoria_ocorrencia',
         'item_subtraido',
         'natureza_ocorrencia',

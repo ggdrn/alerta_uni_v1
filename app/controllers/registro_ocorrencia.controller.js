@@ -90,29 +90,37 @@ exports.findAll = (req, res) => {
 };
 
 // Find a single registro_ocorrencia with an id
-exports.findOne = (req, res) => {
+exports.findOne = async (req, res) => {
 	try {
-		const { nome, uid, pessoa_uid, status, protocolo, data_ocorrencia, natureza_uid, item_uid } = req.query;
-		let condition = [];
-		condition.push(nome ? { nome: { [Op.like]: `%${nome}%` } } : null);
-		condition.push(uid ? { uid: { [Op.eq]: `${uid}` } } : null);
-		condition.push(pessoa_uid ? { pessoa_uid: { [Op.eq]: `${pessoa_uid}` } } : null);
-		condition.push(status ? { status: { [Op.like]: `%${status}%` } } : null);
-		condition.push(protocolo ? { protocolo: { [Op.eq]: `${protocolo}` } } : null);
-		condition.push(data_ocorrencia ? { data_ocorrencia: { [Op.like]: `%${data_ocorrencia}%` } } : null);
-		condition.push(natureza_uid ? { natureza_uid: { [Op.eq]: `${natureza_uid}` } } : null);
-		condition.push(item_uid ? { item_uid: { [Op.eq]: `${item_uid}` } } : null);
+		// Importações para montar o registro ocorrencia por completo
+		const ItemSubtraido = db.item_subtraido;
+		const TipoVinculo = db.tipo_vinculo;
+		const VinculoUniversidade = db.vinculo_universidade;
+		const Pessoa = db.pessoa;
+		const NaturezaOcorrencia = db.natureza_ocorrencia;
+		const CategoriaOcorrencia = db.categoria_ocorrencia;
 
-		RegistroOcorrencia.findOne({ where: { [Op.and]: condition } })
-			.then(data => {
-				res.send(data);
-			})
-			.catch(err => {
-				res.status(500).send({
-					message:
-						err.message || "Erro ao buscar registros em registro_ocorrencia"
-				});
+
+		const uid = req.params.uid
+		let condition = uid ? { uid: { [Op.eq]: `${uid}` } } : null;
+		const registro = await RegistroOcorrencia.findOne({
+			where: condition, include: [
+				{ model: ItemSubtraido },
+				{ model: NaturezaOcorrencia },
+				{ model: Pessoa },
+			]
+		},)
+		if (registro) {
+			// montar o registro por completo
+
+			res.send(registro);
+		} else {
+			res.status(404).send({
+				message: "Registro Ocorrência não encontrado."
 			});
+		}
+
+
 	} catch (e) {
 		res.status(500).send({
 			message:

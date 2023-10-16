@@ -13,7 +13,7 @@ module.exports = app => {
   router.get("/published", registro_ocorrencia.findAllPublished);
 
   // Retrieve a single registro_ocorrencia with id
-  router.get("detalhes/:id", registro_ocorrencia.findOne);
+  router.get("/detalhes/:uid", registro_ocorrencia.findOne);
 
   // Update a registro_ocorrencia with id
   router.put("/:id", registro_ocorrencia.update);
