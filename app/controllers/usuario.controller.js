@@ -128,7 +128,8 @@ exports.login = async (req, res) => {
 					message: "Não foi possível relaizar o login, verifique o email e senha"
 				});
 			} else if (result) {
-				const novoToken = jwt.sign({ userId: registro.uid }, registro.password, { expiresIn: '24h' }); // Token expira em 24 horas
+				// Token expira em 24 horas
+				const novoToken = jwt.sign({ userId: registro.uid }, registro.password, { expiresIn: '24h' });
 				// Tente encontrar um registro com base no usuarioUid, caso não existem crie
 				const [authTokenRegistro, isCreated] = await AuthToken.findOrCreate(
 					{
@@ -143,6 +144,7 @@ exports.login = async (req, res) => {
 					return res.send({ message: "Usuário Logado com sucesso", token: authTokenRegistro.token });
 
 				} else {
+					// Registro criado com sucesso
 					return res.send({ message: "Usuário Logado com sucesso", token: authTokenRegistro.token });
 				}
 
