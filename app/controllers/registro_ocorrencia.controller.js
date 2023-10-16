@@ -99,6 +99,7 @@ exports.findOne = async (req, res) => {
 		const Pessoa = db.pessoa;
 		const NaturezaOcorrencia = db.natureza_ocorrencia;
 		const CategoriaOcorrencia = db.categoria_ocorrencia;
+		const Vitima = db.sequelize.models.Vitima;
 
 
 		const uid = req.params.uid
@@ -112,7 +113,22 @@ exports.findOne = async (req, res) => {
 		},)
 		if (registro) {
 			// montar o registro por completo
-
+			const vinculo_universidade = await VinculoUniversidade.findOne({
+				where: { uid: { [Op.eq]: `${registro.pessoa.universidade_uid}` } }
+			})
+			const tipo_vinculo = await TipoVinculo.findOne({
+				where: { uid: { [Op.eq]: `${vinculo_universidade.tipo_uid}` } }
+			})
+			const categoria_ocorrencia = await CategoriaOcorrencia.findOne({
+				where: { uid: { [Op.eq]: `${registro.natureza_ocorrencium.categoria_uid}` } }
+			})
+			const vitima = await Vitima.findOne({
+				where: { pessoa_uid: { [Op.eq]: `${registro.pessoa.uid}` } }
+			})
+			registro.dataValues.vinculo_universidade = vinculo_universidade;
+			registro.dataValues.tipo_vinculo = tipo_vinculo;
+			registro.dataValues.categoria_ocorrencia = categoria_ocorrencia;
+			registro.dataValues.vitima = vitima;
 			res.send(registro);
 		} else {
 			res.status(404).send({

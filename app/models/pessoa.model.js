@@ -31,6 +31,11 @@ module.exports = (sequelize, Sequelize) => {
         });
 
     const Autor = sequelize.define('Autor', {
+        uid: {
+            type: Sequelize.UUID,
+            defaultValue: Sequelize.UUIDV4, // Valor padrão para gerar um UUID v4
+            primaryKey: true, // Define esta coluna como chave primária
+        },
         instrumento_portado: {
             type: Sequelize.STRING,
         },
@@ -39,6 +44,11 @@ module.exports = (sequelize, Sequelize) => {
     });
 
     const Vitima = sequelize.define('Vitima', {
+        uid: {
+            type: Sequelize.UUID,
+            defaultValue: Sequelize.UUIDV4, // Valor padrão para gerar um UUID v4
+            primaryKey: true, // Define esta coluna como chave primária
+        },
         email: {
             type: Sequelize.STRING,
         },

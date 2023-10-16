@@ -1,6 +1,7 @@
 const db = require("../models");
 const Pessoa = db.pessoa;
 const Op = db.Sequelize.Op;
+const Vitima = db.sequelize.models.Vitima;
 
 const pessoaValidation = require("../utils/models/pessoa");
 const validateEntrace = require("../utils/validations/index")
@@ -27,23 +28,29 @@ exports.create = async (req, res) => {
 
 		// Save pessoa in the database
 		let registros = {}
+		const payloadPessoa = {
+			"nome": data.nome,
+			"rg": data.rg,
+			"endereco": data.endereco,
+			"genero": data.genero,
+			"universidade_uid": data.universidade_uid,
+		}
+		let payloadVitima = {
+			"email": data.email,
+			"data_nascimento": data.data_nascimento,
+			"telefone": data.telefone
+		}
+		const result = await Pessoa.create(payloadPessoa)
+		registros = result;
+		payloadVitima.pessoa_uid = result.uid;
+		const vitima = await Vitima.create(payloadVitima)
+		registros.dataValues.vitima = vitima;
 
-		await Pessoa.create(data)
-			.then(data => {
-				registros = data;
-			})
-			.catch(err => {
-				res.status(500).send({
-					message:
-						err.message || "Não foi possível processar a requisição de Pessoa."
-				});
-			});
-		return res.send({ sucess: "pessoas Registradas com sucesso", data: registros })
+		return res.send({ sucess: "Pessoa Registradas com sucesso", data: registros })
 	} catch (error) {
-		console.log('estou aqui?')
 		res.status(500).send({
 			message: "Não foi possível processar a requisição",
-			error
+			error: error.message
 		});
 	}
 };

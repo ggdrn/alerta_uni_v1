@@ -23,6 +23,8 @@ const validateEntrace = (name, value, rule = defaultRule) => {
             return validarNumero(rule, value, name);
         case 'date':
             return validarData(rule, value, name);
+        case 'tel':
+            return validarNumeroTelefone(rule, value, name);
         default:
             return textValidate(rule, value, name);
     }
@@ -180,5 +182,21 @@ function validarData(rule, value, name) {
     } else {
         return { erro_code: 400, message: `O campo ${name} deve ser uma data válida` };
     }
+}
+function validarNumeroTelefone(rule, value, name) {
+    // Remova quaisquer caracteres não numéricos
+    const numeroLimpo = value.replace(/\D/g, '');
+
+    // Verifique se o número tem entre 10 e 11 dígitos
+    if (numeroLimpo.length >= 10 && numeroLimpo.length <= 11) {
+        // Verifique se o DDD é válido (dois primeiros dígitos)
+        const ddd = numeroLimpo.substring(0, 2);
+        if (ddd >= '11' && ddd <= '99') {
+            // O número é válido
+            return false;
+        }
+    }
+    // O número não é válido
+    return { erro_code: 400, message: `O campo ${name} deve ser um numero de telefone brasileiro válido` };
 }
 module.exports = validateEntrace; 
