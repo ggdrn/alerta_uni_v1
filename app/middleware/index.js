@@ -11,6 +11,7 @@ function autenticacaoMiddleware(req, res, next) {
     if (originalUrl.includes('login')) {
         return next();
     }
+    // Vamos verificar o token na requisição
     const token = req.header('Authorization');
     if (!token) {
         return res.status(401).json({ mensagem: 'Token de autenticação não fornecido.' });

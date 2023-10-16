@@ -129,11 +129,23 @@ exports.login = async (req, res) => {
 				});
 			} else if (result) {
 				const novoToken = jwt.sign({ userId: registro.uid }, registro.password, { expiresIn: '24h' }); // Token expira em 24 horas
-				const [{ token }] = await AuthToken.findOrCreate({
-					where: { token: novoToken, usuarioUid: registro.uid },
-					defaults: { token: novoToken, usuarioUid: registro.uid },
-				});
-				return res.send({ message: "Usuário Logado com sucesso", token });
+				// Tente encontrar um registro com base no usuarioUid, caso não existem crie
+				const [authTokenRegistro, isCreated] = await AuthToken.findOrCreate(
+					{
+						where: { usuarioUid: registro.uid },
+						defaults: { token: novoToken },
+					}
+				);
+				// Se o registro existe, atualize o token
+				if (!isCreated) {
+					authTokenRegistro.token = novoToken;
+					await authTokenRegistro.save();
+					return res.send({ message: "Usuário Logado com sucesso", token: authTokenRegistro.token });
+
+				} else {
+					return res.send({ message: "Usuário Logado com sucesso", token: authTokenRegistro.token });
+				}
+
 			} else {
 				res.status(401).send({
 					message: "Não foi possível relaizar o login, verifique o email e senha"
@@ -149,6 +161,29 @@ exports.login = async (req, res) => {
 };
 
 // Para o usuário realizar logout
-exports.logout = (req, res) => {
-
+exports.logout = async (req, res) => {
+	try {
+		// Vamos verificar o token na requisição
+		const token = req.header('Authorization');
+		if (!token) {
+			return res.status(401).json({ mensagem: 'Token de autenticação não fornecido.' });
+		}
+		// Tente encontrar um registro com base no token
+		const registro = await AuthToken.findOne({ where: { token: token } });
+		if (registro) {
+			// Se o registro existe, delete-o
+			await registro.destroy();
+			// Indica que o registro foi deletado com sucesso
+			return res.send({ message: "Usuário Deslogado com sucesso" });;
+		} else {
+			// Indica que o registro não foi encontrado
+			res.status(404).send({
+				message: "Registro não encontrado"
+			});
+		}
+	} catch (error) {
+		res.status(500).send({
+			message: "Não foi possível relaizar logout"
+		});
+	}
 };
