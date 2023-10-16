@@ -4,10 +4,10 @@ module.exports = app => {
   let router = require("express").Router();
 
   // Create a new categoria_ocorrencia
-  router.post("/", categoria_ocorrencia.create);
+  router.post("/criar", categoria_ocorrencia.create);
 
   // Retrieve all categoria_ocorrencia
-  router.get("/", categoria_ocorrencia.findAll);
+  router.get("/listagem", categoria_ocorrencia.findAll);
 
   // Retrieve all published categoria_ocorrencia
   router.get("/published", categoria_ocorrencia.findAllPublished);

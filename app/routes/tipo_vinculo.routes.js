@@ -4,7 +4,7 @@ module.exports = app => {
   let router = require("express").Router();
 
   // Create a new tipo_vinculo
-  router.post("/", tipo_vinculo.create);
+  router.post("/criar", tipo_vinculo.create);
 
   // Retrieve all tipo_vinculo
   router.get("/", tipo_vinculo.findAll);

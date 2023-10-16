@@ -4,7 +4,7 @@ module.exports = app => {
   let router = require("express").Router();
 
   // Create a new vinculo_universidade
-  router.post("/", vinculo_universidade.create);
+  router.post("/criar", vinculo_universidade.create);
 
   // Retrieve all vinculo_universidade
   router.get("/", vinculo_universidade.findAll);

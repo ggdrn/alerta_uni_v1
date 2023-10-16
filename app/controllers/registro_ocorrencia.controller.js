@@ -59,24 +59,66 @@ exports.create = async (req, res) => {
 
 // Retrieve all registro_ocorrencia from the database.
 exports.findAll = (req, res) => {
-	const nome = req.query.nome;
-	let condition = nome ? { nome: { [Op.like]: `%${nome}%` } } : null;
+	try {
+		const { nome, uid, pessoa_uid, status, protocolo, data_ocorrencia, natureza_uid, item_uid } = req.query;
+		let condition = [];
+		condition.push(nome ? { nome: { [Op.like]: `%${nome}%` } } : null);
+		condition.push(uid ? { uid: { [Op.eq]: `${uid}` } } : null);
+		condition.push(pessoa_uid ? { pessoa_uid: { [Op.eq]: `${pessoa_uid}` } } : null);
+		condition.push(status ? { status: { [Op.like]: `%${status}%` } } : null);
+		condition.push(protocolo ? { protocolo: { [Op.eq]: `${protocolo}` } } : null);
+		condition.push(data_ocorrencia ? { data_ocorrencia: { [Op.like]: `%${data_ocorrencia}%` } } : null);
+		condition.push(natureza_uid ? { natureza_uid: { [Op.eq]: `${natureza_uid}` } } : null);
+		condition.push(item_uid ? { item_uid: { [Op.eq]: `${item_uid}` } } : null);
 
-	RegistroOcorrencia.findAll({ where: condition })
-		.then(data => {
-			res.send(data);
-		})
-		.catch(err => {
-			res.status(500).send({
-				message:
-					err.message || "Some error occurred while retrieving registro_ocorrencia."
+		RegistroOcorrencia.findAll({ where: { [Op.and]: condition } })
+			.then(data => {
+				res.send(data);
+			})
+			.catch(err => {
+				res.status(500).send({
+					message:
+						err.message || "Erro ao buscar registros em registro_ocorrencia"
+				});
 			});
+	} catch (e) {
+		res.status(500).send({
+			message:
+				e.message || "Erro ao buscar registros em registro_ocorrencia."
 		});
+	}
 };
 
 // Find a single registro_ocorrencia with an id
 exports.findOne = (req, res) => {
+	try {
+		const { nome, uid, pessoa_uid, status, protocolo, data_ocorrencia, natureza_uid, item_uid } = req.query;
+		let condition = [];
+		condition.push(nome ? { nome: { [Op.like]: `%${nome}%` } } : null);
+		condition.push(uid ? { uid: { [Op.eq]: `${uid}` } } : null);
+		condition.push(pessoa_uid ? { pessoa_uid: { [Op.eq]: `${pessoa_uid}` } } : null);
+		condition.push(status ? { status: { [Op.like]: `%${status}%` } } : null);
+		condition.push(protocolo ? { protocolo: { [Op.eq]: `${protocolo}` } } : null);
+		condition.push(data_ocorrencia ? { data_ocorrencia: { [Op.like]: `%${data_ocorrencia}%` } } : null);
+		condition.push(natureza_uid ? { natureza_uid: { [Op.eq]: `${natureza_uid}` } } : null);
+		condition.push(item_uid ? { item_uid: { [Op.eq]: `${item_uid}` } } : null);
 
+		RegistroOcorrencia.findOne({ where: { [Op.and]: condition } })
+			.then(data => {
+				res.send(data);
+			})
+			.catch(err => {
+				res.status(500).send({
+					message:
+						err.message || "Erro ao buscar registros em registro_ocorrencia"
+				});
+			});
+	} catch (e) {
+		res.status(500).send({
+			message:
+				e.message || "Erro ao buscar registros em registro_ocorrencia."
+		});
+	}
 };
 
 // Update a registro_ocorrencia by the id in the request

@@ -58,7 +58,6 @@ exports.findAll = (req, res) => {
 	let condition = [];
 	condition.push(nome ? { nome: { [Op.like]: `%${nome}%` } } : null);
 	condition.push(categoria_uid ? { categoria_uid: { [Op.like]: `%${categoria_uid}%` } } : null);
-	console.log(condition);
 
 	NaturezaOcorrencia.findAll({ where: { [Op.and]: condition } })
 		.then(data => {

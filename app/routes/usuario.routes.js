@@ -4,7 +4,7 @@ module.exports = app => {
   let router = require("express").Router();
 
   // Create a new usuario
-  router.post("/", usuario.create);
+  router.post("/criar", usuario.create);
 
   // Retrieve all usuario
   router.get("/", usuario.findAll);
@@ -17,13 +17,13 @@ module.exports = app => {
   router.get("/published", usuario.findAllPublished);
 
   // Retrieve a single usuario with id
-  router.get("/:id", usuario.findOne);
+  router.get("perfil/:id", usuario.findOne);
 
   // Update a usuario with id
-  router.put("/:id", usuario.update);
+  router.put("perfil/:id", usuario.update);
 
   // Delete a usuario with id
-  router.delete("/:id", usuario.delete);
+  router.delete("perfil/:id", usuario.delete);
 
   // Delete all usuario
   router.delete("/", usuario.deleteAll);
