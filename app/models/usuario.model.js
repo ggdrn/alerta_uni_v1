@@ -9,6 +9,9 @@ module.exports = (sequelize, Sequelize) => {
             type: Sequelize.STRING,
             unique: true, // Define o campo como único
         },
+        nome: {
+            type: Sequelize.STRING,
+        },
         tipo: {
             type: Sequelize.INTEGER,
         },

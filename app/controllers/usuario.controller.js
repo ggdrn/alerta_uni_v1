@@ -114,7 +114,6 @@ exports.findAllPublished = (req, res) => {
 // Para o usuário realizar login
 exports.login = async (req, res) => {
 	try {
-
 		let usuario = req.body;
 		let condition = usuario?.email ? { email: { [Op.eq]: `${usuario.email}` } } : null;
 
@@ -141,11 +140,11 @@ exports.login = async (req, res) => {
 				if (!isCreated) {
 					authTokenRegistro.token = novoToken;
 					await authTokenRegistro.save();
-					return res.send({ message: "Usuário Logado com sucesso", token: authTokenRegistro.token });
+					return res.send({ message: "Usuário Logado com sucesso", token: authTokenRegistro.token, usuario_tipo: registro.tipo, usuario_nome: registro.nome });
 
 				} else {
 					// Registro criado com sucesso
-					return res.send({ message: "Usuário Logado com sucesso", token: authTokenRegistro.token });
+					return res.send({ message: "Usuário Logado com sucesso", token: authTokenRegistro.token, usuario_tipo: registro.tipo, usuario_nome: registro.nome });
 				}
 
 			} else {
