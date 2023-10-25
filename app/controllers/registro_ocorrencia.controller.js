@@ -60,6 +60,7 @@ exports.create = async (req, res) => {
 // Retrieve all registro_ocorrencia from the database.
 exports.findAll = (req, res) => {
 	try {
+		const { perPage = 20, page = 1 } = req.query;
 		const { nome, uid, pessoa_uid, status, protocolo, data_ocorrencia, natureza_uid, item_uid } = req.query;
 		let condition = [];
 		condition.push(nome ? { nome: { [Op.like]: `%${nome}%` } } : null);
@@ -67,13 +68,25 @@ exports.findAll = (req, res) => {
 		condition.push(pessoa_uid ? { pessoa_uid: { [Op.eq]: `${pessoa_uid}` } } : null);
 		condition.push(status ? { status: { [Op.like]: `%${status}%` } } : null);
 		condition.push(protocolo ? { protocolo: { [Op.eq]: `${protocolo}` } } : null);
-		condition.push(data_ocorrencia ? { data_ocorrencia: { [Op.like]: `%${data_ocorrencia}%` } } : null);
+		condition.push(data_ocorrencia ? { data_ocorrencia: { [Op.between]: [JSON.parse(data_ocorrencia).data_inicial, JSON.parse(data_ocorrencia).data_final] } } : null);
 		condition.push(natureza_uid ? { natureza_uid: { [Op.eq]: `${natureza_uid}` } } : null);
 		condition.push(item_uid ? { item_uid: { [Op.eq]: `${item_uid}` } } : null);
 
-		RegistroOcorrencia.findAll({ where: { [Op.and]: condition } })
+		const NaturezaOcorrencia = db.natureza_ocorrencia;
+		const CategoriaOcorrencia = db.categoria_ocorrencia;
+		RegistroOcorrencia.findAndCountAll({
+			where: { [Op.and]: condition },
+			limit: perPage, // Define a quantidade de registros por página
+			offset: (page - 1) * perPage, // Calcula o deslocamento com base na página
+			include: [
+				{ model: NaturezaOcorrencia, include: [{ model: CategoriaOcorrencia }] },
+			]
+		})
 			.then(data => {
-				res.send(data);
+				const totalRegistros = data.count; // Total de registros encontrados
+				const paginaAtual = page; // Número da página atual
+				const registros = data.rows; // Registros da página desejada
+				res.send({ data: registros, totalRegistros, paginaAtual });
 			})
 			.catch(err => {
 				res.status(500).send({
@@ -93,42 +106,15 @@ exports.findAll = (req, res) => {
 exports.findOne = async (req, res) => {
 	try {
 		// Importações para montar o registro ocorrencia por completo
-		const ItemSubtraido = db.item_subtraido;
-		const TipoVinculo = db.tipo_vinculo;
-		const VinculoUniversidade = db.vinculo_universidade;
-		const Pessoa = db.pessoa;
-		const NaturezaOcorrencia = db.natureza_ocorrencia;
-		const CategoriaOcorrencia = db.categoria_ocorrencia;
-		const Vitima = db.sequelize.models.Vitima;
-
-
 		const uid = req.params.uid
 		let condition = uid ? { uid: { [Op.eq]: `${uid}` } } : null;
 		const registro = await RegistroOcorrencia.findOne({
 			where: condition, include: [
-				{ model: ItemSubtraido },
-				{ model: NaturezaOcorrencia },
-				{ model: Pessoa },
+				{ all: true, nested: true }
 			]
 		},)
 		if (registro) {
 			// montar o registro por completo
-			const vinculo_universidade = await VinculoUniversidade.findOne({
-				where: { uid: { [Op.eq]: `${registro.pessoa.universidade_uid}` } }
-			})
-			const tipo_vinculo = await TipoVinculo.findOne({
-				where: { uid: { [Op.eq]: `${vinculo_universidade.tipo_uid}` } }
-			})
-			const categoria_ocorrencia = await CategoriaOcorrencia.findOne({
-				where: { uid: { [Op.eq]: `${registro.natureza_ocorrencium.categoria_uid}` } }
-			})
-			const vitima = await Vitima.findOne({
-				where: { pessoa_uid: { [Op.eq]: `${registro.pessoa.uid}` } }
-			})
-			registro.dataValues.vinculo_universidade = vinculo_universidade;
-			registro.dataValues.tipo_vinculo = tipo_vinculo;
-			registro.dataValues.categoria_ocorrencia = categoria_ocorrencia;
-			registro.dataValues.vitima = vitima;
 			res.send(registro);
 		} else {
 			res.status(404).send({

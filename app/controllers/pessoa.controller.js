@@ -2,6 +2,7 @@ const db = require("../models");
 const Pessoa = db.pessoa;
 const Op = db.Sequelize.Op;
 const Vitima = db.sequelize.models.Vitima;
+const Autor = db.sequelize.models.Autor;
 
 const pessoaValidation = require("../utils/models/pessoa");
 const validateEntrace = require("../utils/validations/index")
@@ -40,11 +41,16 @@ exports.create = async (req, res) => {
 			"data_nascimento": data.data_nascimento,
 			"telefone": data.telefone
 		}
+		let payloadAutor = {
+			"instrumento_portado": data.instrumento_portado
+		}
 		const result = await Pessoa.create(payloadPessoa)
 		registros = result;
 		payloadVitima.pessoa_uid = result.uid;
 		const vitima = await Vitima.create(payloadVitima)
+		const autor = await Autor.create(payloadAutor)
 		registros.dataValues.vitima = vitima;
+		registros.dataValues.autor = autor;
 
 		return res.send({ sucess: "Pessoa Registradas com sucesso", data: registros })
 	} catch (error) {
