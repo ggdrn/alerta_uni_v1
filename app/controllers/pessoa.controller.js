@@ -47,6 +47,7 @@ exports.create = async (req, res) => {
 		const result = await Pessoa.create(payloadPessoa)
 		registros = result;
 		payloadVitima.pessoa_uid = result.uid;
+		payloadAutor.pessoa_uid = result.uid;
 		const vitima = await Vitima.create(payloadVitima)
 		const autor = await Autor.create(payloadAutor)
 		registros.dataValues.vitima = vitima;

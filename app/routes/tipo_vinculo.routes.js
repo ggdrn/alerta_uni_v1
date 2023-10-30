@@ -7,7 +7,7 @@ module.exports = app => {
   router.post("/criar", tipo_vinculo.create);
 
   // Retrieve all tipo_vinculo
-  router.get("/", tipo_vinculo.findAll);
+  router.get("/listagem", tipo_vinculo.findAll);
 
   // Retrieve all published tipo_vinculo
   router.get("/published", tipo_vinculo.findAllPublished);

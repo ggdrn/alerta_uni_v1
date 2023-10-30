@@ -132,8 +132,53 @@ exports.findOne = async (req, res) => {
 };
 
 // Update a registro_ocorrencia by the id in the request
-exports.update = (req, res) => {
+exports.update = async (req, res) => {
+	try {
 
+		// validação da request
+		let erros = [];
+		let data = req.body;
+		// Validar o array de Ocorrencias
+		registroOcorrenciaValidation.forEach(({ name, rule }) => {
+			const error = validateEntrace(name, data[name], rule)
+			if (error) {
+				erros.push(error)
+			}
+		})
+
+		if (erros.length) {
+			return res.status(400).send({
+				message: "Não foi possível processar a requisição",
+				erros
+			});
+		}
+
+		// Importações para montar o registro ocorrencia por completo
+		const uid = req.params.uid
+
+		const registro = await RegistroOcorrencia.findOne({
+			where: { uid: uid },
+			include: [
+				{ all: true, nested: true }
+			]
+		});
+		if (registro) {
+			// atualizar o registro por completo
+			await registro.update({ ...registro.dataValues(), ...data});
+			res.send({ success: 'Status atualizado com sucesso' });
+		} else {
+			res.status(404).send({
+				message: "Registro Ocorrência não encontrado."
+			});
+		}
+
+
+	} catch (e) {
+		res.status(500).send({
+			message:
+				e.message || "Erro ao buscar registros em registro_ocorrencia."
+		});
+	}
 };
 
 // Delete a registro_ocorrencia with the specified id in the request
@@ -149,4 +194,37 @@ exports.deleteAll = (req, res) => {
 // Find all published registro_ocorrencias
 exports.findAllPublished = (req, res) => {
 
+};
+// change status registro_ocorrencias
+exports.changeStatus = async (req, res) => {
+	try {
+		// Importações para montar o registro ocorrencia por completo
+		const uid = req.params.uid
+		let data = req.body;
+		if (data?.status === "Denúncia não confirmada" || data?.status === "Processando") {
+			let condition = uid ? { uid: { [Op.eq]: `${uid}` } } : null;
+			const registro = await RegistroOcorrencia.findOne({ where: condition })
+			if (registro) {
+				// montar o registro por completo
+				await registro.update({ status: data.status });
+				res.send({success: 'Status atualizado com sucesso'});
+			} else {
+				res.status(404).send({
+					message: "Registro Ocorrência não encontrado."
+				});
+			}
+		} else {
+			res.status(402).send({
+				message:
+					"Status fornecidos inválidos"
+			});
+		}
+
+
+	} catch (e) {
+		res.status(500).send({
+			message:
+				e.message || "Erro ao buscar registros em registro_ocorrencia."
+		});
+	}
 };

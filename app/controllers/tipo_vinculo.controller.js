@@ -58,7 +58,7 @@ exports.findAll = (req, res) => {
     const nome = req.query.nome;
     let condition = nome ? { nome: { [Op.like]: `%${nome}%` } } : null;
 
-    CategoriaOcorrencia.findAll({ where: condition })
+    TipoVinculo.findAll({ where: condition })
         .then(data => {
             res.send(data);
         })
