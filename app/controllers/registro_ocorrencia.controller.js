@@ -1,4 +1,5 @@
 const db = require("../models");
+const deepUpdate = require("sequelize-deep-update");
 const RegistroOcorrencia = db.registro_ocorrencia;
 const Op = db.Sequelize.Op;
 
@@ -134,7 +135,6 @@ exports.findOne = async (req, res) => {
 // Update a registro_ocorrencia by the id in the request
 exports.update = async (req, res) => {
 	try {
-
 		// validação da request
 		let erros = [];
 		let data = req.body;
@@ -155,23 +155,52 @@ exports.update = async (req, res) => {
 
 		// Importações para montar o registro ocorrencia por completo
 		const uid = req.params.uid
-
+		
 		const registro = await RegistroOcorrencia.findOne({
-			where: { uid: uid },
-			include: [
-				{ all: true, nested: true }
-			]
-		});
+			where: { uid }, // Substitua pelo critério correto para encontrar o registro desejado
+			include: [{ all: true, nested: true }] // Inclua os modelos associados que deseja atualizar
+		})
 		if (registro) {
-			// atualizar o registro por completo
-			await registro.update({ ...registro.dataValues(), ...data});
-			res.send({ success: 'Status atualizado com sucesso' });
+			// dados da ocorrencia
+			registro.descricao = data.descricao;
+			registro.classificacao = data.classificacao;
+			registro.data_ocorrencia = data.data_ocorrencia;
+			registro.natureza_uid = data.natureza_uid;
+			registro.local = data.local; 
+			registro.latitude = data.latitude;
+			registro.longitude = data.longitude;
+			// dados de pessoa
+			await registro.pessoa.update(
+				{
+					nome: data.pessoa.nome,
+					rg: data.pessoa.rg,
+					endereco: data.pessoa.endereco,
+					genero: data.pessoa.genero
+				}
+			)
+			// dados vitima
+			await registro.pessoa.Vitima.update({
+				email: data.pessoa.vitima.email,
+				data_nascimento: data.pessoa.vitima.data_nascimento,
+				telefone: data.pessoa.vitima.telefone,
+
+			})
+			// vinculo universidade 
+			await registro.pessoa.vinculo_universidade.update({ ...data.pessoa.vinculo_universidade });
+			// dados do agressor
+			await registro.pessoa.Autor.update({ instrumento_portado: data.pessoa.autor.instrumento_portado });
+			await registro.item_subtraido.update({ objeto: data.item_subtraido.objeto });
+
+			// Salve as alterações no registro de ocorrência e suas associações
+			await registro.save({ include: [{ all: true, nested: true }] }).then(function () {
+				res.send({ success: 'Registro e associações atualizados com sucesso!' });
+			});
+
 		} else {
-			res.status(404).send({
+			return res.status(404).send({
 				message: "Registro Ocorrência não encontrado."
 			});
 		}
-
 
 	} catch (e) {
 		res.status(500).send({
