@@ -34,7 +34,7 @@ exports.create = async (req, res) => {
 		RegistroOcorrencia.beforeCreate(async (registro, options) => {
 			const ultimoProtocolo = await RegistroOcorrencia.max('protocolo');
 			console.log(ultimoProtocolo);
-			const protocolo = ultimoProtocolo ? "aup000" + (parseFloat(ultimoProtocolo.match(/\d+/)) + 1) : "aup000" + 1;
+			const protocolo = ultimoProtocolo ? "aup-" + (parseFloat(ultimoProtocolo.match(/\d+/)) + 1) : "aup-" + 1;
 			registro.protocolo = protocolo;
 		});
 
@@ -155,7 +155,7 @@ exports.update = async (req, res) => {
 
 		// Importações para montar o registro ocorrencia por completo
 		const uid = req.params.uid
-		
+
 		const registro = await RegistroOcorrencia.findOne({
 			where: { uid }, // Substitua pelo critério correto para encontrar o registro desejado
 			include: [{ all: true, nested: true }] // Inclua os modelos associados que deseja atualizar
@@ -166,7 +166,7 @@ exports.update = async (req, res) => {
 			registro.classificacao = data.classificacao;
 			registro.data_ocorrencia = data.data_ocorrencia;
 			registro.natureza_uid = data.natureza_uid;
-			registro.local = data.local; 
+			registro.local = data.local;
 			registro.latitude = data.latitude;
 			registro.longitude = data.longitude;
 			// dados de pessoa
@@ -236,7 +236,7 @@ exports.changeStatus = async (req, res) => {
 			if (registro) {
 				// montar o registro por completo
 				await registro.update({ status: data.status });
-				res.send({success: 'Status atualizado com sucesso'});
+				res.send({ success: 'Status atualizado com sucesso' });
 			} else {
 				res.status(404).send({
 					message: "Registro Ocorrência não encontrado."

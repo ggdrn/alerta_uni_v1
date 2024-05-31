@@ -11,7 +11,7 @@ module.exports = (sequelize, Sequelize) => {
         protocolo: {
             type: Sequelize.STRING,
             allowNull: true,
-            unique: true,
+            // unique: true,
         },
         descricao: {
             type: Sequelize.STRING(255),

@@ -10,7 +10,7 @@ module.exports = (sequelize, Sequelize) => {
         },
         rg: {
             type: Sequelize.STRING,
-            unique: true, // Define o campo como único
+            // unique: true, // Define o campo como único
         },
         endereco: {
             type: Sequelize.STRING,
