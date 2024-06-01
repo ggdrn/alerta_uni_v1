@@ -61,7 +61,7 @@ exports.create = async (req, res) => {
 // Retrieve all registro_ocorrencia from the database.
 exports.findAll = (req, res) => {
 	try {
-		const { perPage = 20, page = 1 } = req.query;
+		const { per_page = 20, page = 1 } = req.query;
 		const { nome, uid, pessoa_uid, status, protocolo, data_ocorrencia, natureza_uid, item_uid } = req.query;
 		let condition = [];
 		condition.push(nome ? { nome: { [Op.like]: `%${nome}%` } } : null);
@@ -77,17 +77,17 @@ exports.findAll = (req, res) => {
 		const CategoriaOcorrencia = db.categoria_ocorrencia;
 		RegistroOcorrencia.findAndCountAll({
 			where: { [Op.and]: condition },
-			limit: perPage, // Define a quantidade de registros por página
-			offset: (page - 1) * perPage, // Calcula o deslocamento com base na página
+			limit: parseInt(per_page), // Define a quantidade de registros por página
+			offset: (page - 1) * parseInt(per_page), // Calcula o deslocamento com base na página
 			include: [
 				{ model: NaturezaOcorrencia, include: [{ model: CategoriaOcorrencia }] },
 			]
 		})
 			.then(data => {
 				const totalRegistros = data.count; // Total de registros encontrados
-				const paginaAtual = page; // Número da página atual
+				// const page = page; // Número da página atual
 				const registros = data.rows; // Registros da página desejada
-				res.send({ data: registros, totalRegistros, paginaAtual });
+				res.send({ data: registros, totalRegistros: parseInt(totalRegistros), page: parseInt(page), per_page: parseInt(per_page) });
 			})
 			.catch(err => {
 				res.status(500).send({
