@@ -14,7 +14,7 @@ module.exports = (sequelize, Sequelize) => {
             // unique: true,
         },
         descricao: {
-            type: Sequelize.STRING(255),
+            type: Sequelize.TEXT,
         },
         classificacao: {
             type: Sequelize.STRING

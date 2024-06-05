@@ -1,62 +1,228 @@
 const db = require("../models");
-const deepUpdate = require("sequelize-deep-update");
+
 const RegistroOcorrencia = db.registro_ocorrencia;
+const Pessoa = db.pessoa;
+const Vitima = db.sequelize.models.Vitima;
+const Autor = db.sequelize.models.Autor;
+const VinculoUniversidade = db.vinculo_universidade;
+const ItemSubtraido = db.item_subtraido;
 const Op = db.Sequelize.Op;
 
 const registroOcorrenciaValidation = require("../utils/models/registro_ocorrencia");
+const pessoaValidation = require("../utils/models/pessoa");
+const itemSubtraidoValidation = require("../utils/models/item_subtraido");
+const vinculoUniversidadeValidation = require("../utils/models/vinculo_universidade");
 const validateEntrace = require("../utils/validations/index")
 // Create and Save a new registro_ocorrencia
+// exports.create = async (req, res) => {
+// 	try {
+// 		// validação da request
+// 		let erros = [];
+// 		let data = req.body;
+// 		// Validar o array de Ocorrencias
+// 		registroOcorrenciaValidation.forEach(({ name, rule }) => {
+// 			const error = validateEntrace(name, data[name], rule)
+// 			if (error) {
+// 				erros.push(error)
+// 			}
+// 		})
+
+// 		if (erros.length) {
+// 			return res.status(400).send({
+// 				message: "Não foi possível processar a requisição",
+// 				erros
+// 			});
+// 		}
+
+// 		// Save registros in the database
+// 		let registros = {}
+
+// 		data.status = "Aberta";
+
+// 		RegistroOcorrencia.beforeCreate(async (registro, options) => {
+// 			const ultimoProtocolo = await RegistroOcorrencia.max('protocolo');
+// 			console.log(ultimoProtocolo);
+// 			const protocolo = ultimoProtocolo ? "aup-" + (parseFloat(ultimoProtocolo.match(/\d+/)) + 1) : "aup-" + 1;
+// 			registro.protocolo = protocolo;
+// 		});
+
+// 		await RegistroOcorrencia.create(data)
+// 			.then(data => {
+// 				registros = data;
+// 			})
+// 			.catch(err => {
+// 				res.status(500).send({
+// 					message:
+// 						err.message || "Não foi possível processar a requisição de Registro Ocorrência."
+// 				});
+// 			});
+// 		return res.send({ sucess: "Ocorrencia Registrada com sucesso", data: registros })
+// 	} catch (error) {
+// 		res.status(500).send({
+// 			message: "Não foi possível processar a requisição",
+// 			error
+// 		});
+// 	}
+// };
+
+
 exports.create = async (req, res) => {
-	try {
-		// validação da request
-		let erros = [];
-		let data = req.body;
-		// Validar o array de Ocorrencias
-		registroOcorrenciaValidation.forEach(({ name, rule }) => {
-			const error = validateEntrace(name, data[name], rule)
-			if (error) {
-				erros.push(error)
-			}
-		})
+	const {
+		nome,
+		rg,
+		endereco,
+		genero,
+		email,
+		data_nascimento,
+		telefone,
+		descricao,
+		classificacao,
+		data_ocorrencia,
+		natureza_uid,
+		curso,
+		departamento,
+		matricula,
+		tipo_uid,
+		instrumento_portado,
+		objeto,
+		latitude,
+		longitude,
+		local
+	} = req.body;
 
-		if (erros.length) {
-			return res.status(400).send({
-				message: "Não foi possível processar a requisição",
-				erros
-			});
+	//   validação da request
+	let erros = [];
+	let data = req.body;
+	// Validar o array de Ocorrencias
+	registroOcorrenciaValidation.forEach(({ name, rule }) => {
+		const error = validateEntrace(name, data[name], rule)
+		if (error) {
+			erros.push(error)
 		}
+	})
+	itemSubtraidoValidation.forEach(({ name, rule }) => {
+		const error = validateEntrace(name, data[name], rule)
+		if (error) {
+			erros.push(error)
+		}
+	})
+	vinculoUniversidadeValidation.forEach(({ name, rule }) => {
+		const error = validateEntrace(name, data[name], rule)
+		if (error) {
+			erros.push(error)
+		}
+	})
+	pessoaValidation.forEach(({ name, rule }) => {
+		const error = validateEntrace(name, data[name], rule)
+		if (error) {
+			erros.push(error)
+		}
+	})
 
-		// Save registros in the database
-		let registros = {}
+	if (erros.length) {
+		return res.status(400).send({
+			message: "Não foi possível processar a requisição",
+			erros
+		});
+	}
 
-		data.status = "Aberta";
+	const transaction = await RegistroOcorrencia.sequelize.transaction();
 
+	try {
+
+		// 1. Criar o Vínculo com a Universidade
+		const vinculo = await VinculoUniversidade.create(
+			{
+				curso,
+				departamento,
+				matricula,
+				tipo_uid,
+			},
+			{ transaction }
+		);
+
+		// 2. Criar a Pessoa
+		const pessoa = await Pessoa.create(
+			{
+				nome,
+				rg,
+				endereco,
+				genero,
+				universidade_uid: vinculo.uid
+			},
+			{ transaction }
+		);
+		// 3. Criar a Vítima
+		const vitima = await Vitima.create(
+			{
+				email,
+				data_nascimento,
+				telefone,
+				pessoa_uid: pessoa.uid,
+			},
+			{ transaction }
+		);
+
+		let registros = {};
+
+		// Gerar o protocolo da ocorrência
 		RegistroOcorrencia.beforeCreate(async (registro, options) => {
-			const ultimoProtocolo = await RegistroOcorrencia.max('protocolo');
-			console.log(ultimoProtocolo);
-			const protocolo = ultimoProtocolo ? "aup-" + (parseFloat(ultimoProtocolo.match(/\d+/)) + 1) : "aup-" + 1;
+			const ultimoRegistro = await RegistroOcorrencia.findOne({
+				order: [['createdAt', 'DESC']], // Ordena por createdAt em ordem decrescente
+			});
+			const protocolo = ultimoRegistro.protocolo ? "aup-" + (parseFloat(ultimoRegistro.protocolo.match(/\d+/)) + 1) : "aup-" + 1;
 			registro.protocolo = protocolo;
 		});
 
-		await RegistroOcorrencia.create(data)
-			.then(data => {
-				registros = data;
-			})
-			.catch(err => {
-				res.status(500).send({
-					message:
-						err.message || "Não foi possível processar a requisição de Registro Ocorrência."
-				});
-			});
-		return res.send({ sucess: "Ocorrencia Registrada com sucesso", data: registros })
-	} catch (error) {
-		res.status(500).send({
-			message: "Não foi possível processar a requisição",
-			error
-		});
-	}
-};
+		// 4. Salvar os itens subtraídos (se houver)
+		if (objeto) {
+			const objetoCreated = await ItemSubtraido.create(
+				{
+					objeto,
+				},
+				{ transaction }
+			);
+		}
 
+		// 5. Salvar o instrumento portado (se houver)
+		if (instrumento_portado) {
+			await Autor.create(
+				{
+					instrumento_portado,
+					pessoa_uid: pessoa.uid,
+				},
+				{ transaction }
+			);
+		}
+
+		// 6. Criar o Registro da Ocorrência
+		const ocorrencia = await RegistroOcorrencia.create(
+			{
+				descricao,
+				classificacao,
+				status: "Aberta",
+				data_ocorrencia,
+				natureza_uid,
+				pessoa_uid: pessoa.uid,
+				latitude,
+				longitude,
+				local,
+				...(objeto) && { item_uid: objetoCreated.uid },
+			},
+			{ transaction }
+		)
+
+
+		// Commit da transação
+		await transaction.commit();
+		res.status(201).json({ message: 'Ocorrência registrada com sucesso!', data: ocorrencia });
+	} catch (error) {
+		// Rollback da transação em caso de erro
+		await transaction.rollback();
+		console.error(error);
+		res.status(500).json({ message: error?.message || 'Erro ao registrar a ocorrência.', erros: [{ message: error?.message }] });
+	}
+}
 
 // Retrieve all registro_ocorrencia from the database.
 exports.findAll = (req, res) => {
