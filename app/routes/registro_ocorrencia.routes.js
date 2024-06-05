@@ -21,8 +21,14 @@ module.exports = app => {
   // Retrieve a single registro_ocorrencia with id
   router.get("/detalhes/:uid", registro_ocorrencia.findOne);
 
+  // Retrieve a single registro_ocorrencia with id
+  router.get("/detalhes", registro_ocorrencia.findOne);
+
   // change a status registro_ocorrencia
   router.get("/historico_status/:uid", registro_ocorrencia.findAllStatus);
+
+  // change a status registro_ocorrencia
+  router.get("/dashboard/total", registro_ocorrencia.countOcorrencias);
 
   // Update a registro_ocorrencia with id
   router.put("/:id", registro_ocorrencia.update);

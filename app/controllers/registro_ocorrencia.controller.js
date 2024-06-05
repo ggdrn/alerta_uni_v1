@@ -179,7 +179,7 @@ exports.create = async (req, res) => {
 exports.findAll = async (req, res) => {
 	try {
 		const { per_page = 20, page = 1 } = req.query;
-		const { nome, uid, pessoa_uid, status, protocolo, data_ocorrencia, natureza_uid, item_uid } = req.query;
+		const { nome, uid, pessoa_uid, status, protocolo, data_ocorrencia, natureza_uid, item_uid, categoria_uid } = req.query;
 		let condition = [];
 		condition.push(nome ? { nome: { [Op.like]: `%${nome}%` } } : null);
 		condition.push(uid ? { uid: { [Op.eq]: `${uid}` } } : null);
@@ -190,6 +190,8 @@ exports.findAll = async (req, res) => {
 		condition.push(natureza_uid ? { natureza_uid: { [Op.eq]: `${natureza_uid}` } } : null);
 		condition.push(item_uid ? { item_uid: { [Op.eq]: `${item_uid}` } } : null);
 
+		const conditionCategoria = categoria_uid ? { categoria_uid: { [Op.eq]: `${categoria_uid}` } } : null
+
 		const NaturezaOcorrencia = db.natureza_ocorrencia;
 		const CategoriaOcorrencia = db.categoria_ocorrencia;
 		const data = await RegistroOcorrencia.findAndCountAll({
@@ -197,7 +199,11 @@ exports.findAll = async (req, res) => {
 			limit: parseInt(per_page), // Define a quantidade de registros por página
 			offset: (page - 1) * parseInt(per_page), // Calcula o deslocamento com base na página
 			include: [
-				{ model: NaturezaOcorrencia, include: [{ model: CategoriaOcorrencia }] },
+				{
+					model: NaturezaOcorrencia, include: [{ model: CategoriaOcorrencia }], where: {
+						...conditionCategoria // Busca NaturezasOcorrencias que pertencem à categoria fornecida
+					},
+				},
 			]
 		})
 
@@ -230,9 +236,12 @@ exports.findOne = async (req, res) => {
 	try {
 		// Importações para montar o registro ocorrencia por completo
 		const uid = req.params.uid
-		let condition = uid ? { uid: { [Op.eq]: `${uid}` } } : null;
+		const protocolo = req.query.protocolo
+		let condition = [];
+		condition.push(uid ? { uid: { [Op.eq]: `${uid}` } } : null);
+		condition.push(protocolo ? { protocolo: { [Op.eq]: `${protocolo}` } } : null);
 		const registro = await RegistroOcorrencia.findOne({
-			where: condition, include: [
+			where: { [Op.and]: condition }, include: [
 				{ all: true, nested: true }
 			]
 		},)
@@ -404,7 +413,7 @@ exports.findAllStatus = async (req, res) => {
 		const uid = req.params.uid
 		let condition = { ocorrencia_uid: { [Op.eq]: `${uid}` } }
 
-		const data = await StatusHistorico.findAll({ where: condition })
+		const data = await StatusHistorico.findAll({ where: condition, order: [['createdAt', 'ASC']] })
 		let registroFormarado = data.map(item => ({
 			...item.toJSON(),
 			status_novo_exibicao: stautsFormater[item.status_novo],
@@ -412,6 +421,49 @@ exports.findAllStatus = async (req, res) => {
 		}))
 		res.send({ data: registroFormarado });
 
+
+	} catch (e) {
+		res.status(500).send({
+			message:
+				e.message || "Erro ao buscar historico dos status da ocorrência."
+		});
+	}
+};
+
+// Lista Informações importantes para aa dashboard
+exports.countOcorrencias = async (req, res) => {
+	try {
+
+		// 1. Total de ocorrências
+		const totalOcorrencias = await RegistroOcorrencia.count();
+
+		// 2. Total de ocorrências com status "Aberta"
+		const totalAbertas = await RegistroOcorrencia.count({
+			where: { status: 'aberta' }
+		});
+
+		// 3. Total de ocorrências com status "Em Apuração"
+		const totalEmApuracao = await RegistroOcorrencia.count({
+			where: { status: 'apuracao' }
+		});
+
+		// 4. Total de ocorrências com status "Encerrada"
+		const totalEncerradas = await RegistroOcorrencia.count({
+			where: { status: 'encerrada' }
+		})
+
+		// 4. Total de ocorrências com status "Pendentes"
+		const totalPendetes = await RegistroOcorrencia.count({
+			where: { status: 'pendente' }
+		});
+
+		res.send({
+			totalOcorrencias,
+			totalAbertas,
+			totalEmApuracao,
+			totalEncerradas,
+			totalPendetes,
+		});
 
 	} catch (e) {
 		res.status(500).send({

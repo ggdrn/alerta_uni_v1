@@ -13,6 +13,7 @@ function usuarioTipoPessoaAutenticacao(usuario, originalUrl) {
         'usuario/criar',
         'registro_ocorrencia/criar',
         'registro_ocorrencia/detalhes',
+        'historico_status',
         'categoria_ocorrencia',
         'item_subtraido',
         'natureza_ocorrencia',
@@ -25,7 +26,7 @@ function usuarioTipoPessoaAutenticacao(usuario, originalUrl) {
         return true
     } else if (usuario.tipo === 2) {
         // Se o usuário for do tipo pessoa, ele pode acessar apenas algumas rotas
-        return !!dicionarioRotas.includes(originalUrl);
+        return !!dicionarioRotas.some(route => originalUrl.includes(route));
     } else {
         // excessão da regra, o usuário não tem autorização de nada
         return false;
@@ -55,7 +56,7 @@ function autenticacaoMiddleware(req, res, next) {
                             condition = { uid: { [Op.eq]: data.usuarioUid } };
                             const usuario = await Usuario.findOne({ where: condition })
                             // Verificamos o perfil do usuario e seu acesso;
-                            const validacaoUsuario = usuarioTipoPessoaAutenticacao(usuario);
+                            const validacaoUsuario = usuarioTipoPessoaAutenticacao(usuario, originalUrl);
                             // Se o token é válido, passe para a próxima rota
                             if (validacaoUsuario) {
                                 return next();
