@@ -28,6 +28,7 @@ const TipoVinculo = db.tipo_vinculo = require("./tipo_vinculo.model")(sequelize,
 const VinculoUniversidade = db.vinculo_universidade = require("./vinculo_universidade.model")(sequelize, Sequelize);
 const RegistroOcorrencia = db.registro_ocorrencia = require("./registro_ocorrencia.model")(sequelize, Sequelize);
 const Pessoa = db.pessoa = require("./pessoa.model")(sequelize, Sequelize);
+const StatusHistorico = db.status_historico = require("./status_historico.model")(sequelize, Sequelize);
 db.usuario = require("./usuario.model")(sequelize, Sequelize);
 
 // Definindo as associações
@@ -41,5 +42,5 @@ RegistroOcorrencia.belongsTo(Pessoa, { foreignKey: 'pessoa_uid' });
 Pessoa.belongsTo(VinculoUniversidade, { foreignKey: 'universidade_uid' });
 VinculoUniversidade.belongsTo(TipoVinculo, { foreignKey: 'tipo_uid' });
 
-
+StatusHistorico.belongsTo(RegistroOcorrencia, { foreignKey: 'ocorrencia_uid' })
 module.exports = db;

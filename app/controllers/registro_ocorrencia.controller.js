@@ -6,6 +6,7 @@ const Vitima = db.sequelize.models.Vitima;
 const Autor = db.sequelize.models.Autor;
 const VinculoUniversidade = db.vinculo_universidade;
 const ItemSubtraido = db.item_subtraido;
+const StatusHistorico = db.status_historico;
 const Op = db.Sequelize.Op;
 
 const registroOcorrenciaValidation = require("../utils/models/registro_ocorrencia");
@@ -13,59 +14,9 @@ const pessoaValidation = require("../utils/models/pessoa");
 const itemSubtraidoValidation = require("../utils/models/item_subtraido");
 const vinculoUniversidadeValidation = require("../utils/models/vinculo_universidade");
 const validateEntrace = require("../utils/validations/index")
+const { stautsFormater } = require("../utils/dicionario")
+
 // Create and Save a new registro_ocorrencia
-// exports.create = async (req, res) => {
-// 	try {
-// 		// validação da request
-// 		let erros = [];
-// 		let data = req.body;
-// 		// Validar o array de Ocorrencias
-// 		registroOcorrenciaValidation.forEach(({ name, rule }) => {
-// 			const error = validateEntrace(name, data[name], rule)
-// 			if (error) {
-// 				erros.push(error)
-// 			}
-// 		})
-
-// 		if (erros.length) {
-// 			return res.status(400).send({
-// 				message: "Não foi possível processar a requisição",
-// 				erros
-// 			});
-// 		}
-
-// 		// Save registros in the database
-// 		let registros = {}
-
-// 		data.status = "Aberta";
-
-// 		RegistroOcorrencia.beforeCreate(async (registro, options) => {
-// 			const ultimoProtocolo = await RegistroOcorrencia.max('protocolo');
-// 			console.log(ultimoProtocolo);
-// 			const protocolo = ultimoProtocolo ? "aup-" + (parseFloat(ultimoProtocolo.match(/\d+/)) + 1) : "aup-" + 1;
-// 			registro.protocolo = protocolo;
-// 		});
-
-// 		await RegistroOcorrencia.create(data)
-// 			.then(data => {
-// 				registros = data;
-// 			})
-// 			.catch(err => {
-// 				res.status(500).send({
-// 					message:
-// 						err.message || "Não foi possível processar a requisição de Registro Ocorrência."
-// 				});
-// 			});
-// 		return res.send({ sucess: "Ocorrencia Registrada com sucesso", data: registros })
-// 	} catch (error) {
-// 		res.status(500).send({
-// 			message: "Não foi possível processar a requisição",
-// 			error
-// 		});
-// 	}
-// };
-
-
 exports.create = async (req, res) => {
 	const {
 		nome,
@@ -200,7 +151,7 @@ exports.create = async (req, res) => {
 			{
 				descricao,
 				classificacao,
-				status: "Aberta",
+				status: "aberta",
 				data_ocorrencia,
 				natureza_uid,
 				pessoa_uid: pessoa.uid,
@@ -225,7 +176,7 @@ exports.create = async (req, res) => {
 }
 
 // Retrieve all registro_ocorrencia from the database.
-exports.findAll = (req, res) => {
+exports.findAll = async (req, res) => {
 	try {
 		const { per_page = 20, page = 1 } = req.query;
 		const { nome, uid, pessoa_uid, status, protocolo, data_ocorrencia, natureza_uid, item_uid } = req.query;
@@ -241,7 +192,7 @@ exports.findAll = (req, res) => {
 
 		const NaturezaOcorrencia = db.natureza_ocorrencia;
 		const CategoriaOcorrencia = db.categoria_ocorrencia;
-		RegistroOcorrencia.findAndCountAll({
+		const data = await RegistroOcorrencia.findAndCountAll({
 			where: { [Op.and]: condition },
 			limit: parseInt(per_page), // Define a quantidade de registros por página
 			offset: (page - 1) * parseInt(per_page), // Calcula o deslocamento com base na página
@@ -249,18 +200,23 @@ exports.findAll = (req, res) => {
 				{ model: NaturezaOcorrencia, include: [{ model: CategoriaOcorrencia }] },
 			]
 		})
-			.then(data => {
-				const totalRegistros = data.count; // Total de registros encontrados
-				// const page = page; // Número da página atual
-				const registros = data.rows; // Registros da página desejada
-				res.send({ data: registros, totalRegistros: parseInt(totalRegistros), page: parseInt(page), per_page: parseInt(per_page) });
-			})
-			.catch(err => {
-				res.status(500).send({
-					message:
-						err.message || "Erro ao buscar registros em registro_ocorrencia"
-				});
-			});
+
+		const totalRegistros = data.count; // Total de registros encontrados
+		const registrosDaPagina = data.rows // Registros da página desejada
+
+		const registrosFormatados = registrosDaPagina.map(item => {
+			return {
+				...item.toJSON(),  // Use toJSON() para remover campos circulares 
+				status_exibicao: stautsFormater[item.status] ?? "" // Adiciona o campo status_exibicao 
+			};
+		});
+		res.send({
+			data: registrosFormatados,
+			totalRegistros: parseInt(totalRegistros),
+			page: parseInt(page),
+			per_page: parseInt(per_page)
+		});
+
 	} catch (e) {
 		res.status(500).send({
 			message:
@@ -282,7 +238,11 @@ exports.findOne = async (req, res) => {
 		},)
 		if (registro) {
 			// montar o registro por completo
-			res.send(registro);
+			const registrosFormatado = {
+				...registro.toJSON(),
+				status_exibicao: stautsFormater[registro.status] ?? ""
+			}
+			res.send(registrosFormatado);
 		} else {
 			res.status(404).send({
 				message: "Registro Ocorrência não encontrado."
@@ -353,9 +313,26 @@ exports.update = async (req, res) => {
 			})
 			// vinculo universidade 
 			await registro.pessoa.vinculo_universidade.update({ ...data.pessoa.vinculo_universidade });
-			// dados do agressor
-			await registro.pessoa.Autor.update({ instrumento_portado: data.pessoa.autor.instrumento_portado });
-			await registro.item_subtraido.update({ objeto: data.item_subtraido.objeto });
+			// dados do agressor informações opicionais
+			if (registro.pessoa.Autor) {
+				await registro.pessoa.Autor.update({ instrumento_portado: data.pessoa.autor.instrumento_portado });
+			} else {
+				await Autor.create(
+					{
+						instrumento_portado: data.pessoa.autor.instrumento_portado,
+						pessoa_uid: registro.pessoa.uid,
+					});
+			}
+
+			if (registro.item_subtraido) {
+				await registro.item_subtraido.update({ objeto: data.item_subtraido.objeto });
+			} else {
+				await registro.item_subtraido.create({ objeto: data.item_subtraido.objeto });
+				const objetoCreated = await ItemSubtraido.create({ objeto });
+				registro.item_uid = objetoCreated.uid;
+			}
+
+
 
 			// Salve as alterações no registro de ocorrência e suas associações
 			await registro.save({ include: [{ all: true, nested: true }] }).then(function () {
@@ -396,30 +373,50 @@ exports.changeStatus = async (req, res) => {
 		// Importações para montar o registro ocorrencia por completo
 		const uid = req.params.uid
 		let data = req.body;
-		if (data?.status === "Denúncia não confirmada" || data?.status === "Processando") {
-			let condition = uid ? { uid: { [Op.eq]: `${uid}` } } : null;
-			const registro = await RegistroOcorrencia.findOne({ where: condition })
-			if (registro) {
-				// montar o registro por completo
-				await registro.update({ status: data.status });
-				res.send({ success: 'Status atualizado com sucesso' });
-			} else {
-				res.status(404).send({
-					message: "Registro Ocorrência não encontrado."
-				});
-			}
+		let condition = uid ? { uid: { [Op.eq]: `${uid}` } } : null;
+		const registro = await RegistroOcorrencia.findOne({ where: condition })
+		if (registro) {
+			// montar o registro por completo
+			await registro.update({ status: data.status_novo });
+			await StatusHistorico.create({
+				...data,
+				ocorrencia_uid: uid,
+			})
+			res.send({ success: 'Status atualizado com sucesso' });
 		} else {
-			res.status(402).send({
-				message:
-					"Status fornecidos inválidos"
+			res.status(404).send({
+				message: "Registro Ocorrência não encontrado."
 			});
 		}
-
 
 	} catch (e) {
 		res.status(500).send({
 			message:
 				e.message || "Erro ao buscar registros em registro_ocorrencia."
+		});
+	}
+};
+
+// Lista o histórico de Status
+exports.findAllStatus = async (req, res) => {
+	try {
+		const nome = req.query.nome;
+		const uid = req.params.uid
+		let condition = { ocorrencia_uid: { [Op.eq]: `${uid}` } }
+
+		const data = await StatusHistorico.findAll({ where: condition })
+		let registroFormarado = data.map(item => ({
+			...item.toJSON(),
+			status_novo_exibicao: stautsFormater[item.status_novo],
+			status_antigo_exibicao: stautsFormater[item.status_antigo]
+		}))
+		res.send({ data: registroFormarado });
+
+
+	} catch (e) {
+		res.status(500).send({
+			message:
+				e.message || "Erro ao buscar historico dos status da ocorrência."
 		});
 	}
 };

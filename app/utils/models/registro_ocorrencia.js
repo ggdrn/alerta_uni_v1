@@ -7,6 +7,5 @@ const array = [
     { name: 'longitude', rule: { type: 'number' } },
     { name: 'natureza_uid', rule: { type: 'text' } },
     { name: 'pessoa_uid', rule: { type: 'text' } },
-    { name: 'item_uid', rule: { type: 'text' } },
 ]
 module.exports = array;

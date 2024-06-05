@@ -5,10 +5,10 @@ module.exports = app => {
 
   // Create a new registro_ocorrencia
   router.post("/criar", registro_ocorrencia.create);
-   
+
   // update a registro_ocorrencia
   router.patch("/atualizar/:uid", registro_ocorrencia.update);
-  
+
   // change a status registro_ocorrencia
   router.patch("/mudar_status/:uid", registro_ocorrencia.changeStatus);
 
@@ -20,6 +20,9 @@ module.exports = app => {
 
   // Retrieve a single registro_ocorrencia with id
   router.get("/detalhes/:uid", registro_ocorrencia.findOne);
+
+  // change a status registro_ocorrencia
+  router.get("/historico_status/:uid", registro_ocorrencia.findAllStatus);
 
   // Update a registro_ocorrencia with id
   router.put("/:id", registro_ocorrencia.update);
